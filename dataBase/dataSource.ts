@@ -9,8 +9,19 @@ const dataSource = new DataSource ({
     username: process.env.DB_USER_NAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [ ],
-    migrations: ['./**/migration/*.ts'],
+    entities: [],
+    migrations: [],
     synchronize: true,
     logging: false
   });
+
+const initializeDB = async ()=>
+    await dataSource.initialize().then(()=>{
+        console.log('connected to db');
+     }).catch((error)=>{
+        console.log('error at connection : ');
+        console.log(error);
+        
+     })
+
+export default {initializeDB , dataSource};
