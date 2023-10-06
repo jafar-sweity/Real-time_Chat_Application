@@ -1,27 +1,20 @@
-import { Column } from "typeorm/browser";
-import { ManyToMany } from "typeorm/browser";
-import { PrimaryGeneratedColumn } from "typeorm/browser";
-import { Entity } from "typeorm/browser";
-import { BaseEntity } from "typeorm/browser";
+import { Column, ManyToMany, PrimaryGeneratedColumn, Entity, BaseEntity, JoinTable } from "typeorm";
 import { User } from "./User.js";
-import { JoinTable } from "typeorm/browser";
-
+import { Permission } from "./Permission.js";
 
 @Entity()
 export class UserRoles extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
-    RoleId :string
+    RoleId: string
 
     @Column()
-    Name:string
+    Name: string
 
-
-    @ManyToMany(()=>User)
+    @ManyToMany(() => User)
     @JoinTable()
-    user:User
+    user: User
 
-
-    @ManyToMany(()=>Permission)
+    @ManyToMany(() => Permission)
     @JoinTable()
-    permission:Permission
+    permission: Permission
 }
