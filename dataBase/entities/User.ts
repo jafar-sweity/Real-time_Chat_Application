@@ -1,53 +1,66 @@
 import bcrypt from 'bcrypt';
 import {
-    BaseEntity,
-    BeforeInsert,
-    BeforeUpdate,
-    Column,
-    Entity,
-    PrimaryGeneratedColumn
-} from "typeorm";
-import { IsEmail, Length } from "class-validator";
+  BaseEntity,
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { IsEmail, Length } from 'class-validator';
+
+import { Message } from './Message.js';
+import { ChatRoom } from './Chatroom.js';
+import { UserBlock } from './UserBlock.js';
+import { UserMute } from './UserMute.js';
+import { UserRoles } from './UserRoles.js';
 
 @Entity()
 export class User extends BaseEntity {
+  @PrimaryGeneratedColumn('uuid')
+  UserId: string;
 
-    @PrimaryGeneratedColumn('uuid')
-    UserId: string
+  @Column({ nullable: false })
+  Username: string;
 
-    @Column({ nullable: false })
-    Username: string
+  @Column({ unique: true, nullable: false })
+  @Length(8, 20)
+  Password: string;
 
-    @Column({ unique: true, nullable: false })
-    @Length(8, 20)
-    Passowrd: any
-
-
-    @BeforeInsert()
-    @BeforeUpdate()
-    async hashPassowrd() {
-        if (this.Passowrd) {
-            const salt: any = bcrypt.genSalt();
-            this.Passowrd = bcrypt.hash(this.Passowrd, salt);
-        }
-
-
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    if (this.Password) {
+      const saltRounds = 10;
+      const salt = await bcrypt.genSalt(saltRounds);
+      this.Password = await bcrypt.hash(this.Password, salt);
     }
+  }
 
+  @Column({ nullable: false })
+  @IsEmail()
+  Email: string;
 
+  @Column({ default: false })
+  OnlineStatus: boolean;
 
+  @OneToMany(() => Message, message => message.user)
+  messages: Message[];
 
+  @ManyToMany(() => ChatRoom)
+  @JoinTable()
+  chatRooms: ChatRoom[];
 
-    @Column({ nullable: false })
-    @IsEmail()
-    Email: string
+  @OneToMany(() => UserBlock, userBlock => userBlock.BlockedId)
+  blockedUsers: UserBlock[];
 
-    @Column()
-    OnlineStatus: boolean
+  @OneToMany(() => UserMute, userMute => userMute.MutedId)
+  mutedUsers: UserMute[];
 
-
-
+  @ManyToMany(() => UserRoles)
+  @JoinTable()
+  roles: UserRoles[];
 }
-
-
-
