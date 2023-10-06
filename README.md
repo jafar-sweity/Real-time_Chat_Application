@@ -39,7 +39,7 @@ Our application leverages the following technologies:
 - **Node.js**: Backend server environment.
 - **Express.js**: Framework for building RESTful APIs.
 - **WebSocket (e.g., [socket.io](http://socket.io))**: Real-time communication.
-- **PostgreSQL (example)**: Database for data storage.
+- **mySQL (example)**: Database for data storage.
 - **Passport.js**: User authentication.
 - **JWT (JSON Web Tokens)**: Authentication tokens.
 
