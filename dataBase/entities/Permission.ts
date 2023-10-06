@@ -1,8 +1,8 @@
-import { PrimaryGeneratedColumn } from "typeorm/browser";
-import { ManyToMany } from "typeorm/browser";
-import { Column } from "typeorm/browser";
-import { BaseEntity } from "typeorm/browser";
-import { Entity } from "typeorm/browser";
+import { PrimaryGeneratedColumn } from "typeorm";
+import { ManyToMany } from "typeorm";
+import { Column } from "typeorm";
+import { BaseEntity } from "typeorm";
+import { Entity } from "typeorm";
 import { User } from "./User.js";
 
 @Entity()
