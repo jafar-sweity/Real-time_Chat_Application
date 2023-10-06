@@ -1,4 +1,4 @@
-import { BaseEntity , Entity, PrimaryGeneratedColumn, OneToOne,ManyToOne} from "typeorm";
+import { BaseEntity , Entity, PrimaryGeneratedColumn, OneToOne,ManyToOne,JoinColumn} from "typeorm";
 import { User } from "./User.js";
 
 @Entity()
@@ -9,6 +9,7 @@ export class UserBlock extends BaseEntity{
 
  
     @ManyToOne(()=>User,user=>user.UserId)
+    @JoinColumn()
     BlockerId : User
 
 
