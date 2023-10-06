@@ -13,7 +13,10 @@ export class UserMute extends BaseEntity{
     MuterId:Relation<User>
 
 
-   
+    @OneToOne (()=>User, user=>user.UserId)
+    MutedId: Relation<User>
+
+
 
 }
 
