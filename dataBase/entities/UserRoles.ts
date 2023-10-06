@@ -7,8 +7,12 @@ export class UserRoles extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     RoleId: string
 
-    @Column()
-    Name: string
+    @Column({
+        type:'enum',
+        enum:['user','admin'],
+        default:'user'
+    })
+    Name: 'user'|'admin'
 
   
 
