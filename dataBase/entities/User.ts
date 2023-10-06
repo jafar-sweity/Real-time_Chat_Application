@@ -47,7 +47,7 @@ export class User extends BaseEntity {
   @Column({ default: false })
   OnlineStatus: boolean;
 
-  @OneToMany(() => Message, message => message.user)
+  @OneToMany(() => Message, message => message)
   messages: Message[];
 
   @ManyToMany(() => ChatRoom)

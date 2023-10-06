@@ -5,7 +5,9 @@ import {
     ManyToOne,
     Entity,
     PrimaryGeneratedColumn,
-    Column
+    Column,
+    JoinTable,
+    ManyToMany
 } from "typeorm";
 
 import { User } from "./User.js";
@@ -31,11 +33,8 @@ export class Message extends BaseEntity {
     @Column('blob',{ nullable: true })
     Attachment: Buffer
 
-    @ManyToOne(() => User)
-    @JoinColumn()
-    user: User
+   
 
-    @ManyToOne(() => ChatRoom)
-    @JoinColumn()
-    chatRoom: ChatRoom
+
+   
 }
