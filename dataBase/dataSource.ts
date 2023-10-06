@@ -1,6 +1,6 @@
 import 'typeorm';
 import { DataSource } from 'typeorm/browser';
-
+import 'dotenv/config'
 
 const dataSource = new DataSource ({
     type: 'mysql',
