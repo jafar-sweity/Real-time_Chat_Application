@@ -4,6 +4,7 @@ import { Column } from "typeorm";
 import { BaseEntity } from "typeorm";
 import { Entity } from "typeorm";
 import { User } from "./User.js";
+import { UserRoles } from "./UserRoles.js";
 
 @Entity()
 export class Permission extends BaseEntity {
@@ -18,7 +19,5 @@ export class Permission extends BaseEntity {
     Name:'remove_user' | 'add_user' | 'send_message'
 
 
-    @ManyToMany(()=>User)
-    user:User
-
+  
 }

@@ -10,11 +10,9 @@ export class UserRoles extends BaseEntity {
     @Column()
     Name: string
 
-    @ManyToMany(() => User)
-    @JoinTable()
-    user: User
+  
 
     @ManyToMany(() => Permission)
     @JoinTable()
-    permission: Permission
+    permission: Permission[]
 }
