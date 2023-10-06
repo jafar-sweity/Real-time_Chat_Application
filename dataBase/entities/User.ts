@@ -9,6 +9,7 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  JoinColumn,
 } from 'typeorm';
 import { IsEmail, Length } from 'class-validator';
 
@@ -47,9 +48,6 @@ export class User extends BaseEntity {
   @Column({ default: false })
   OnlineStatus: boolean;
 
-  @OneToMany(() => Message, message => message)
-  messages: Message[];
-
   @ManyToMany(() => ChatRoom)
   @JoinTable()
   chatRooms: ChatRoom[];
@@ -63,4 +61,8 @@ export class User extends BaseEntity {
   @ManyToMany(() => UserRoles)
   @JoinTable()
   roles: UserRoles[];
+
+  @OneToMany(() => Message, message => message.user) 
+  messages: Message;
+
 }

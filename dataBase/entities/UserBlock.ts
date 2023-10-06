@@ -1,5 +1,6 @@
-import { BaseEntity , Entity, PrimaryGeneratedColumn, OneToOne,ManyToOne,JoinColumn, Column, OneToMany} from "typeorm";
+import { BaseEntity , Entity, PrimaryGeneratedColumn, OneToOne,ManyToOne,JoinColumn} from "typeorm";
 import { User } from "./User.js";
+import { Relation } from "typeorm/browser";
 
 @Entity()
 export class UserBlock extends BaseEntity{
@@ -8,11 +9,12 @@ export class UserBlock extends BaseEntity{
 
 
  
-    @Column()
-    BlockerId : string
+    @ManyToOne(()=>User,user=>user.UserId)
+    @JoinColumn()
+    BlockerId : Relation<User>
 
 
-    @Column()
-    BlockedId: string
+    @OneToOne (()=>User, user=>user.UserId)
+    BlockedId: Relation<User>
 
 }
