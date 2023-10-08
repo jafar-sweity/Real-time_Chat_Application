@@ -46,7 +46,7 @@ export const registerUser = async (Username:string, email:string, password:strin
 
     
     // Login Function
-    export const login = async (email: string, password: string, socket: any) => {
+    export const login = async (email: string, password: string) => {
         try {
           if (!email || !password) {
             return { success: false, msg: 'Please enter all fields' };
@@ -64,7 +64,7 @@ export const registerUser = async (Username:string, email:string, password:strin
           }
       
           // Notify other users that this user is online
-          socket.emit('userOnline', { userId: user.UserId });
+         
       
           const token = jwt.sign({ id: user.UserId }, process.env.JWT_SECRET || '', {
             expiresIn: '30m',
