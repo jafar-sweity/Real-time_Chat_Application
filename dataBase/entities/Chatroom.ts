@@ -17,6 +17,9 @@ export class ChatRoom extends BaseEntity {
     })
     Type: 'private' | 'group'
 
+    @Column({type:'timestamp with local time zone' , default:()=>'CURRENT_TIMESTAMP'})
+    creationDate : Date;
+
     @ManyToMany(() => User)
     @JoinTable()
     user: User[]

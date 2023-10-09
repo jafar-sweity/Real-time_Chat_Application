@@ -4,7 +4,7 @@ import { deleteUser } from '../controllers/userControllers.js';
 
 const route = express();
 
- route.delete ('/delete-USR', (req,res)=>{
+ route.delete ('/deleteUSR', (req,res)=>{
     const username = req.body.username;
 
     deleteUser(username).then(()=>{
