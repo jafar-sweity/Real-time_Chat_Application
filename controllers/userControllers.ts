@@ -48,6 +48,7 @@ export const registerUser = async (Username:string, email:string, password:strin
 };
 
 
+
     
     // Login Function
     export const login = async (email: string, password: string) => {
@@ -70,7 +71,7 @@ export const registerUser = async (Username:string, email:string, password:strin
           // Notify other users that this user is online
          
       
-          const token = jwt.sign({ id: user.UserId }, process.env.JWT_SECRET || '', {
+          const token = jwt.sign({ email: user.Email }, process.env.JWT_SECRET || '', {
             expiresIn: '30m',
           });
       
@@ -81,6 +82,8 @@ export const registerUser = async (Username:string, email:string, password:strin
         }
       };
     
+
+
 
       export const deleteUser = async (Username:string) => {
         const userRepository : Repository<User> = getRepository(User);
