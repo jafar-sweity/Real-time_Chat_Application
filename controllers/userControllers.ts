@@ -2,7 +2,7 @@ import { User } from '../dataBase/entities/User.js';
 import {isEmail} from 'class-validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-
+import express from 'express'
 // Registration Function
 export const registerUser = async (Username:string, email:string, password:string) => {
   try {
@@ -44,6 +44,7 @@ export const registerUser = async (Username:string, email:string, password:strin
 };
 
 
+
     
     // Login Function
     export const login = async (email: string, password: string, socket: any) => {
@@ -66,7 +67,7 @@ export const registerUser = async (Username:string, email:string, password:strin
           // Notify other users that this user is online
           socket.emit('userOnline', { userId: user.UserId });
       
-          const token = jwt.sign({ id: user.UserId }, process.env.JWT_SECRET || '', {
+          const token = jwt.sign({ email: user.Email }, process.env.JWT_SECRET || '', {
             expiresIn: '30m',
           });
       
@@ -77,3 +78,5 @@ export const registerUser = async (Username:string, email:string, password:strin
         }
       };
     
+
+
