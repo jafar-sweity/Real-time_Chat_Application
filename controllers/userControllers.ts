@@ -2,7 +2,7 @@ import { User } from '../dataBase/entities/User.js';
 import {isEmail} from 'class-validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import express from 'express'
+
 // Registration Function
 export const registerUser = async (Username:string, email:string, password:string) => {
   try {
@@ -20,6 +20,7 @@ export const registerUser = async (Username:string, email:string, password:strin
     if (Username.length < 3 || Username.length > 20) {
       return { success: false, msg: 'Username must be between 3 and 20 characters' };
     }
+
 
     const isExist = await User.findOne({ where: { Email: email } });
     if (isExist) {
@@ -47,7 +48,7 @@ export const registerUser = async (Username:string, email:string, password:strin
 
     
     // Login Function
-    export const login = async (email: string, password: string, socket: any) => {
+    export const login = async (email: string, password: string) => {
         try {
           if (!email || !password) {
             return { success: false, msg: 'Please enter all fields' };
@@ -65,7 +66,7 @@ export const registerUser = async (Username:string, email:string, password:strin
           }
       
           // Notify other users that this user is online
-          socket.emit('userOnline', { userId: user.UserId });
+         
       
           const token = jwt.sign({ email: user.Email }, process.env.JWT_SECRET || '', {
             expiresIn: '30m',
@@ -80,3 +81,19 @@ export const registerUser = async (Username:string, email:string, password:strin
     
 
 
+
+      export const deleteUser = async (Username:string) => {
+        const userRepository : Repository<User> = getRepository(User);
+
+        try{
+        const user:any = await userRepository.findOne({ where: { Username: Username } });
+        if (user) {
+          await userRepository.remove(user);
+          return { success: true };
+        } else {
+          return { success: false, msg: 'User not found' };
+        }
+      } catch (error) {
+        console.error(error);
+        return { success: false, msg: 'Internal server error' };
+        }};
