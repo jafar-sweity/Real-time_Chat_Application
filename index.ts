@@ -11,6 +11,7 @@ import redis from "redis";
 import session from "express-session";
 import ConnectRedis from "connect-redis";
 import socket from 'socket.io'
+import connection from './routes/connection.js';
 
 
 const app = express();
@@ -56,24 +57,33 @@ let io = new Server(server);
     //    console.log('connected');
     //  });
     //  app.use(`/${socket.id}`, rmUser);
+    
+    // app.use(`/${socket.id}`, login);
 io.on('connection', (socket) => {
   console.log(`Client connected with ID: ${socket.id}`);
+   
+  socket.on("disconnect", (socket) => {
+    console.log(`Client disconnected  `);
+    
+  }); 
   
-  app.use(`/${socket.id}`, register);
-  app.use(`/${socket.id}`, login);
- 
-
-
 });
 
 
+// io.on('online', (socket)=>{
+//   app.use(`/users`, register);
+//   console.log(`the user with id ${socket.id }is online `)
+// })
 
 
 
-server.listen(PORT, () => {
+
+
+server.listen (PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
   dataSource.initializeDB();
-
+ 
   
-  });
+  
+});
 

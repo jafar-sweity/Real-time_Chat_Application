@@ -2,9 +2,6 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import dataSource from './dataBase/dataSource.js';
-import register from './routes/register.js';
-import login from './routes/login.js';
-import rmUser from './routes/rmUser.js';
 import path from 'path';
 const app = express();
 let server = http.createServer(app);
@@ -29,12 +26,18 @@ let io = new Server(server);
 //    res.send('connected!!');
 //    console.log('connected');
 //  });
+//  app.use(`/${socket.id}`, rmUser);
+// app.use(`/${socket.id}`, login);
 io.on('connection', (socket) => {
     console.log(`Client connected with ID: ${socket.id}`);
-    app.use(`/${socket.id}`, register);
-    app.use(`/${socket.id}`, login);
-    app.use(`/${socket.id}`, rmUser);
+    socket.on("disconnect", (socket) => {
+        console.log(`Client disconnected  `);
+    });
 });
+// io.on('online', (socket)=>{
+//   app.use(`/users`, register);
+//   console.log(`the user with id ${socket.id }is online `)
+// })
 server.listen(PORT, () => {
     console.log(`Server is running on PORT ${PORT}`);
     dataSource.initializeDB();
