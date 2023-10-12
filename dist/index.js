@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import dataSource from './dataBase/dataSource.js';
+import login from './routes/login.js';
 import path from 'path';
 import { sendMessage } from './controllers/MessageController.js';
 const app = express();
@@ -28,9 +29,11 @@ let io = new Server(server);
 //    console.log('connected');
 //  });
 //  app.use(`/${socket.id}`, rmUser);
-// app.use(`/${socket.id}`, login);
 io.on('connection', (socket) => {
     console.log(`Client connected with ID: ${socket.id}`);
+    socket.on('online', (socket) => {
+        app.use('/user', login);
+    });
     socket.emit('newMessage', {
         from: 'firas',
         text: 'hello everybody',
