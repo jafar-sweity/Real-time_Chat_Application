@@ -15,7 +15,7 @@ import connection from './routes/connection.js';
 import { sendMessage } from './controllers/MessageController.js';
 
 
-const app = express();
+const app:any = express();
 let server = http.createServer(app);
 const PORT = process.env.PORT ||3000;
 
@@ -59,10 +59,12 @@ let io = new Server(server);
     //  });
     //  app.use(`/${socket.id}`, rmUser);
     
-    // app.use(`/${socket.id}`, login);
     io.on('connection', (socket) => {
       console.log(`Client connected with ID: ${socket.id}`);
-
+      socket.on('online', (socket)=>{
+        app.use('/user',login);
+        
+      })
 
       socket.emit('newMessage',{
         from:'firas',
