@@ -2,14 +2,10 @@ import { User } from '../dataBase/entities/User.js';
 import {isEmail} from 'class-validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import 'typeorm'
-import { Repository, getRepository } from 'typeorm';
 
 
-// Registration Function
 export const registerUser = async (Username:string, email:string, password:string) => {
   try {
-    // Validation checks
     const regexEmail = /[@gmail.com|@yahoo.com|@hotmail.com|@live.com|@outlook.com|@cloud.com]$/;
 
     if (!regexEmail.test(email) && !isEmail(email)) {
@@ -85,18 +81,22 @@ export const registerUser = async (Username:string, email:string, password:strin
 
 
 
-      export const deleteUser = async (Username:string) => {
-        const userRepository : Repository<User> = getRepository(User);
+      export const deleteUser = async (Username: string) => {
+  try {
+    const user = await User.findOne({ where: { Username: Username } });
 
-        try{
-        const user:any = await userRepository.findOne({ where: { Username: Username } });
-        if (user) {
-          await userRepository.remove(user);
-          return { success: true };
-        } else {
-          return { success: false, msg: 'User not found' };
-        }
-      } catch (error) {
-        console.error(error);
-        return { success: false, msg: 'Internal server error' };
-        }};
+    if (user) {
+      await user.remove();
+      return { success: true };
+    } else {
+      return { success: false, msg: 'User not found' };
+    }
+  } catch (error) {
+    console.error(error);
+    return { success: false, msg: 'Internal server error' };
+  }
+};
+
+
+
+    

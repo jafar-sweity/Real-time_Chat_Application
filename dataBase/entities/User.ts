@@ -27,8 +27,7 @@ export class User extends BaseEntity {
   @Column({ nullable: false })
   Username: string;
 
-  @Column({nullable:true})
-  Profile:Buffer;
+  
 
   @Column({ unique: true, nullable: false })
   @Length(8, 20)
@@ -50,6 +49,8 @@ export class User extends BaseEntity {
 
   @Column({ default: false })
   OnlineStatus: boolean;
+
+  
 
   @ManyToMany(() => ChatRoom)
   @JoinTable()

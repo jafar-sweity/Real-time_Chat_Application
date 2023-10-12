@@ -17,9 +17,9 @@ const dataSource = new DataSource ({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     entities: [User,ChatRoom,Message,Permission,UserBlock,UserMute,UserRoles],
-    migrations: [],
     synchronize: true,
-    logging: false
+    logging: true,
+    insecureAuth : true
   });
 
 const initializeDB = async ()=>

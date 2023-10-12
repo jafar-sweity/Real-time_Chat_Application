@@ -10,7 +10,7 @@ const authenticate = async (
   const token = req.headers['authorization'] || req.cookies['token'] || '';  
   let tokenIsValid;
   try {
-    tokenIsValid = jwt.verify(token, process.env.SECRET_KEY || '');
+    tokenIsValid = jwt.verify(token, process.env.JWT_SECRET || '');
     
   } catch (error) { 
     res.status(401).send("You are Unauthorized!");
