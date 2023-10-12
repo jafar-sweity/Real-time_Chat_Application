@@ -12,6 +12,7 @@ import session from "express-session";
 import ConnectRedis from "connect-redis";
 import socket from 'socket.io'
 import connection from './routes/connection.js';
+import { sendMessage } from './controllers/MessageController.js';
 
 
 const app = express();
@@ -59,15 +60,44 @@ let io = new Server(server);
     //  app.use(`/${socket.id}`, rmUser);
     
     // app.use(`/${socket.id}`, login);
-io.on('connection', (socket) => {
-  console.log(`Client connected with ID: ${socket.id}`);
-   
-  socket.on("disconnect", (socket) => {
-    console.log(`Client disconnected  `);
+    io.on('connection', (socket) => {
+      console.log(`Client connected with ID: ${socket.id}`);
+
+
+      socket.emit('newMessage',{
+        from:'firas',
+        text:'hello everybody',
+        CreatedAt : new Date().getTime()
+      })
+      socket.broadcast.emit('newMessage',{
+        from:'firas',
+        text:'new user joined',
+        CreatedAt : new Date().getTime()
+      })
     
-  }); 
+      socket.on('createMessage', (message) => {
+        sendMessage(socket.id, message.text);
+        console.log('message', message);
+    
+        // Emit the message to all connected clients, including the sender
+        io.emit('newMessage', {
+          from: message.from,
+          text: message.text,
+          CreatedAt: new Date().getTime()
+        });
+      });
+    
+      socket.on('disconnect', () => {
+        console.log(`Client disconnected`);
+      });
+    });
+    
+
   
-});
+
+
+  
+
 
 
 // io.on('online', (socket)=>{

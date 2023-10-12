@@ -27,7 +27,7 @@ export class Message extends BaseEntity {
     @CreateDateColumn({ type: 'timestamp' })
     Timestamp: Date ;
 
-    @Column()
+    @Column({nullable:true})
     ChatRoomID: number
 
     @Column('blob', { nullable: true })
