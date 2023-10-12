@@ -2,6 +2,7 @@ import { User } from '../dataBase/entities/User.js';
 import {isEmail} from 'class-validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import express from 'express';
 
 
 export const registerUser = async (Username:string, email:string, password:string) => {
@@ -71,7 +72,7 @@ export const registerUser = async (Username:string, email:string, password:strin
             expiresIn: '30m',
           });
       
-          return { success: true, token, user: { Username: user.Username } };
+          return { success: true, token, user: user.Username  };
         } catch (error) {
           console.error(error);
           return { success: false, msg: 'Internal server error' };
@@ -99,4 +100,26 @@ export const registerUser = async (Username:string, email:string, password:strin
 
 
 
-    
+
+export const logout = async (req:express.Request,res:express.Response) => {
+
+  //     req.session.destroy((err) => {
+  //   if (err) {
+  //     console.log(err);
+  //     res.status(500).json({ message: 'Server error' });
+  //   } else {
+  //     res.clearCookie("sid"); // clear cookie session id 
+
+  //     res.status(200).json({ message: 'User logged out successfully' });    
+  //   }
+  // });
+
+    res.cookie('userName', '', {
+    maxAge: -1,  // This means the cookie will be deleted
+    expires: new Date(Date.now() - 1000)
+  });
+   res.cookie('token', '', {
+    maxAge: -1
+  });
+  res.status(200).json({ message: 'User logged out successfully' });
+}

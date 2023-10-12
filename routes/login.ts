@@ -10,9 +10,17 @@ const router = express();
 
 router.post('/login', async (req, res) => {
   const { Email, Password } = req.body;
+  
   const result = await login(Email, Password); // Access io instance from req
   
   if (result.success) {
+     res.cookie('userName', result.user, {
+        maxAge: 60 * 60 * 1000
+      });
+
+      res.cookie('token', result.token, {
+        maxAge: 60 * 60 * 1000
+      });
     res.status(200).json({ token: result.token, user: result.user });
   } else {
     res.status(404).json({ msg: result.msg });
