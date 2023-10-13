@@ -11,11 +11,11 @@ import { UserRoles } from './entities/UserRoles.js';
 
 const dataSource = new DataSource ({
     type: 'mysql',
-    host: 'final-project.ccft9dbis2c2.eu-west-2.rds.amazonaws.com',
-    port: 3306,
-    username: 'admin',
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    username: process.env.DB_USER_NAME,
     password:process.env.DB_PASSWORD,
-    database: 'final_project',
+    database: process.env.DB_NAME,
     synchronize: true,
     logging: false,
     entities: [User,ChatRoom,Message,Permission,UserBlock,UserMute,UserRoles],
