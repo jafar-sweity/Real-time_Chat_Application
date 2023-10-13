@@ -14,7 +14,7 @@ const dataSource = new DataSource ({
     host: 'final-project.ccft9dbis2c2.eu-west-2.rds.amazonaws.com',
     port: 3306,
     username: 'admin',
-    password: '12345678',
+    password:process.env.DB_PASSWORD,
     database: 'final_project',
     synchronize: true,
     logging: false,
