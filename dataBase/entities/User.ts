@@ -50,7 +50,6 @@ export class User extends BaseEntity {
   @Column({ default: false })
   OnlineStatus: boolean;
 
-  
 
   @ManyToMany(() => ChatRoom)
   @JoinTable()

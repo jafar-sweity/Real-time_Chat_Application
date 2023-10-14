@@ -8,16 +8,27 @@ import { Message } from './entities/Message.js';
 import { UserBlock } from './entities/UserBlock.js';
 import { UserMute } from './entities/UserMute.js';
 import { UserRoles } from './entities/UserRoles.js';
+// const dataSource = new DataSource ({
+//     type: 'mysql',
+//     host: process.env.DB_HOST,
+//     port: Number(process.env.DB_PORT),
+//     username: process.env.DB_USER_NAME,
+//     password:process.env.DB_PASSWORD,
+//     database: process.env.DB_NAME,
+//     synchronize: true,
+//     logging: false,
+//     entities: [User,ChatRoom,Message,Permission,UserBlock,UserMute,UserRoles],
+//   })
 const dataSource = new DataSource({
     type: 'mysql',
-    host: 'final-project.ccft9dbis2c2.eu-west-2.rds.amazonaws.com',
+    host: 'localhost',
     port: 3306,
-    username: 'admin',
-    password: '12345678',
+    username: 'root',
+    password: '123123',
     database: 'final_project',
     synchronize: true,
     logging: false,
-    entities: [User, ChatRoom, Message, Permission, UserBlock, UserMute, UserRoles],
+    entities: [User, ChatRoom, Message, Permission, UserBlock, UserMute, UserRoles]
 });
 const initializeDB = async () => await dataSource.initialize().then(() => {
     console.log('connected to db');
