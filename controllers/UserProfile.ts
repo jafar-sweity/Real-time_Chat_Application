@@ -1,21 +1,28 @@
-import express from 'express'
-import {User} from '../dataBase/entities/User.js'
-import { Repository } from 'typeorm';
-import { error } from 'console';
+import { User } from "../dataBase/entities/User.js";
 
-
-
-export const EditUserProfile = async(Username:string)=>{
-        const user:any =await User.findOne({where : {Username : Username}});
-        const newUser = new User();
-        user.equals(newUser);
-
-        await user.save().then(()=>{
-            console.log({msg: "changed user successfuly"})
-        }).catch((error: any)=>{
-            console.log(`there is an error ${error}`)
-        })
-
+export const updateUserProfile = async (Username: string, updatedData: any) => {
     
-}
-
+    const user = await User.findOne({where:{Username:Username}});
+  
+    if (!user) {
+      console.log("User not found");
+      return;
+    }
+  
+    if (updatedData.Username) {
+      user.Username = updatedData.Username;
+    }
+  
+    if (updatedData.Password) {
+      user.Password = updatedData.Password;
+    }
+  
+    if (updatedData.Email) {
+      user.Email = updatedData.Email;
+    }
+  
+   
+    await user.save();
+    console.log("User profile updated successfully");
+  };
+  
