@@ -2,7 +2,7 @@ import express from 'express';
 import { User } from '../dataBase/entities/User.js';
 import { updateUserProfile } from '../controllers/UserProfile.js';
 
-const app = express();
+const app = express.Router();
 
 
 

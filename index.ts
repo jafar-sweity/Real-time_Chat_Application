@@ -14,7 +14,6 @@ import socket from 'socket.io'
 import connection from './routes/connection.js';
 import { sendMessage } from './controllers/MessageController.js';
 import { Message } from './dataBase/entities/Message.js';
-import router from './routes/chatroom.js';
 
 
 const app:any = express();
@@ -67,7 +66,7 @@ let io = new Server(server);
       })
       app.use('/auth',register);
       app.use('/auth',login);
-      app.use('/chatroom',router);
+      // app.use('/chatroom',router);
       
 
       socket.emit('newMessage',{

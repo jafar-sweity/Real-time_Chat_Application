@@ -2,7 +2,7 @@ import express from 'express';
 import { authorization } from '../controllers/chatRoomControllers.js';
 
 
-const router=  express();
+const router=  express.Router();
 
 
 router.post('/create', (req, res) => {

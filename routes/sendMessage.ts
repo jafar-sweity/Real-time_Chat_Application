@@ -4,7 +4,7 @@ import { sendMessage } from '../controllers/MessageController.js';
 import { Message } from '../dataBase/entities/Message.js';
 import { User } from '../dataBase/entities/User.js';
 
-const router = express();
+const router = express.Router();
 
 
 

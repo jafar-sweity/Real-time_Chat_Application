@@ -2,7 +2,7 @@ import express from 'express'
 import login from './login.js'
 import { deleteUser } from '../controllers/userControllers.js';
 
-const route = express();
+const route = express.Router();
 
  route.delete ('/deleteUSR', (req,res)=>{
     const username = req.body.username;

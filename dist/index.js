@@ -6,7 +6,6 @@ import register from './routes/register.js';
 import login from './routes/login.js';
 import path from 'path';
 import { sendMessage } from './controllers/MessageController.js';
-import router from './routes/chatroom.js';
 const app = express();
 let server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
@@ -37,7 +36,7 @@ io.on('connection', (socket) => {
     });
     app.use('/auth', register);
     app.use('/auth', login);
-    app.use('/chatroom', router);
+    // app.use('/chatroom',router);
     socket.emit('newMessage', {
         from: 'firas',
         text: 'hello everybody',

@@ -1,7 +1,7 @@
 import express from 'express'
 import { User } from '../dataBase/entities/User.js';
 
-const app = express();
+const app = express.Router();
 
 
  app.get('/userProfile',(req,res)=>{
