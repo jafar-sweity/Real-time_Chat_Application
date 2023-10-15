@@ -1,12 +1,6 @@
 import { Message } from "../dataBase/entities/Message.js"
 import { login } from "./userControllers.js";
 
-
-
-
-
-import { getRepository } from 'typeorm';
-
 export const sendMessage = async (senderID: any, content: any) => {
   try {
   
