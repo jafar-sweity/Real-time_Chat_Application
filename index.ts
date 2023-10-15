@@ -12,8 +12,9 @@ import session from "express-session";
 import ConnectRedis from "connect-redis";
 import socket from 'socket.io'
 import connection from './routes/connection.js';
-import { sendMessage } from './controllers/MessageController.js';
+import sendMessage from './routes/sendMessage.js';
 import { Message } from './dataBase/entities/Message.js';
+import chatroom from './routes/chatroom.js';
 
 
 const app:any = express();
@@ -66,8 +67,8 @@ let io = new Server(server);
       })
       app.use('/auth',register);
       app.use('/auth',login);
-      // app.use('/chatroom',router);
-      
+      app.use('/chatroom',chatroom);
+      app.use('/Message',sendMessage)
 
       socket.emit('newMessage',{
         from:'firas',
@@ -81,15 +82,15 @@ let io = new Server(server);
       })
     
       socket.on('createMessage', () => {
-       const thing =  app.use('/Message',sendMessage)
-        console.log('message', thing.text );
+       
+        // console.log('message', thing.text );
     
-        // Emit the message to all connected clients, including the sender
-        io.emit('newMessage', {
-          from: thing.from,
-          text: thing.text,
-          CreatedAt: thing.createdAt
-        });
+        // // Emit the message to all connected clients, including the sender
+        // io.emit('newMessage', {
+        //   from: thing.from,
+        //   text: thing.text,
+        //   CreatedAt: thing.createdAt
+        // });
       });
     
       socket.on('disconnect', () => {

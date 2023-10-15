@@ -3,17 +3,19 @@ import { ChatRoom } from '../dataBase/entities/Chatroom.js';
 import { sendMessage } from '../controllers/MessageController.js';
 import { Message } from '../dataBase/entities/Message.js';
 import { User } from '../dataBase/entities/User.js';
+import bodyParser from 'body-parser';
 
-const router = express.Router();
+const router = express();
+router.use(bodyParser.urlencoded({extended: true})) 
+router.use(bodyParser.json()) 
 
 
-
-router.post('/send', async (req, res) => {
+export default router.post('/send', async (req, res) => {
     try {
-      const { SenderUserId, chatRoomID, Content, Attachment } = req.body;
+      const { Username, chatRoom, Content, Attachment } = req.body;
   
-      const isChatRoom :any= await ChatRoom.findOne({ where: { ChatRoomID: chatRoomID } });
-      const user:any = await User.findOne({ where: { UserId: SenderUserId } });
+      const isChatRoom :any= await ChatRoom.findOne({ where: { Name: chatRoom } });
+      const user:any = await User.findOne({ where: { Username: Username } });
   
       if (!isChatRoom) {
         // If the chat room doesn't exist, return an error response
@@ -26,7 +28,7 @@ router.post('/send', async (req, res) => {
       }
   
       const newMess = new Message();
-      newMess.ChatRoomID = isChatRoom;
+      newMess.ChatRoomID = isChatRoom.ChatRoomID;
       newMess.Content = Content;
       newMess.attachment = Attachment;
       newMess.user = user;
@@ -45,5 +47,4 @@ router.post('/send', async (req, res) => {
   });
   
 
-export default router;
 

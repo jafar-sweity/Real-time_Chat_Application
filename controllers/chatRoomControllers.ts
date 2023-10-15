@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 import express from 'express' 
 import { Message } from '../dataBase/entities/Message.js';
 
-export const authorization= async (Name:string)=>{
+export const authorization=  (Name:string)=>{
   
    
 
@@ -14,14 +14,14 @@ export const authorization= async (Name:string)=>{
    
         const newChatRoom = new ChatRoom();
         newChatRoom.Name = Name;
-        await newChatRoom.save();
+     newChatRoom.save();
     
        return ({ message: `ChatRoom ${Name} created successfully`});
 
 
  
 
-       
+
    
 }
   

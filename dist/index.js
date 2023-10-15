@@ -5,7 +5,8 @@ import dataSource from './dataBase/dataSource.js';
 import register from './routes/register.js';
 import login from './routes/login.js';
 import path from 'path';
-import { sendMessage } from './controllers/MessageController.js';
+import sendMessage from './routes/sendMessage.js';
+import chatroom from './routes/chatroom.js';
 const app = express();
 let server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
@@ -36,7 +37,8 @@ io.on('connection', (socket) => {
     });
     app.use('/auth', register);
     app.use('/auth', login);
-    // app.use('/chatroom',router);
+    app.use('/chatroom', chatroom);
+    app.use('/Message', sendMessage);
     socket.emit('newMessage', {
         from: 'firas',
         text: 'hello everybody',
@@ -48,14 +50,13 @@ io.on('connection', (socket) => {
         CreatedAt: new Date().getTime()
     });
     socket.on('createMessage', () => {
-        const thing = app.use('/Message', sendMessage);
-        console.log('message', thing.text);
-        // Emit the message to all connected clients, including the sender
-        io.emit('newMessage', {
-            from: thing.from,
-            text: thing.text,
-            CreatedAt: thing.createdAt
-        });
+        // console.log('message', thing.text );
+        // // Emit the message to all connected clients, including the sender
+        // io.emit('newMessage', {
+        //   from: thing.from,
+        //   text: thing.text,
+        //   CreatedAt: thing.createdAt
+        // });
     });
     socket.on('disconnect', () => {
         console.log(`Client disconnected`);

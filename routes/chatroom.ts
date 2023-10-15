@@ -1,26 +1,22 @@
-import express from 'express';
+import bodyParser from 'body-parser';
 import { authorization } from '../controllers/chatRoomControllers.js';
-
-
-const router=  express.Router();
-
-
+import express from 'express'
+const router = express.Router();
+router.use(bodyParser.urlencoded({extended: true})) 
+router.use(bodyParser.json()) 
 router.post('/create', (req, res) => {
-    try {
-      const Name = req.body.Name;
-  
-      // Assuming authorization is a function that may throw errors
+  try {
+    const Name = req.body.Name;
+    if (Name) {
       authorization(Name);
-  
-      // Send a success response if no errors occurred
       res.status(200).json({ message: 'Authorization successful' });
-    } catch (error) {
-      // Handle errors
-
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
+    } else {
+      res.status(400).json({ message: 'Missing required field: Name' });
     }
-  });
-  
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
-export default router ;
+export default router;
