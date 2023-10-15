@@ -1,0 +1,33 @@
+version: '3'
+services:
+  DataBase:
+    image: mysql
+    container_name: DataBase
+    restart: restart
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=final_project
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+  app:
+    image: final-project
+    container_name: final-project
+    build: .
+    environment:
+      - PORT=80
+      - DB_HOST=localhost
+      - DB_USER=root
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=final_project
+    restart: restart
+    env_file: ./.env
+    ports:
+      - 3000:80
+    depends_on:
+      - DataBase 
+
+volumes:
+  DataBase-data:
