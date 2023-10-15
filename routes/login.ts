@@ -1,5 +1,6 @@
 import express from 'express';
 import { login } from '../controllers/userControllers.js';
+import socket from 'socket.io'
 const router = express();
 
 
@@ -10,14 +11,17 @@ const router = express();
 
 router.post('/login', async (req, res) => {
   const { Email, Password } = req.body;
-  
-  const result = await login(Email, Password); // Access io instance from req
-  
+  const onlinestatus:boolean = true;
+
+  const result = await login(Email, Password,onlinestatus); // Access io instance from req
+
   if (result.success) {
-     res.cookie('userName', result.user, {
+     res.cookie('Username', result.user, {
         maxAge: 60 * 60 * 1000
       });
 
+   
+      
       res.cookie('token', result.token, {
         maxAge: 60 * 60 * 1000
       });

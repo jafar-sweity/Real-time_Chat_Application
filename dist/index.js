@@ -32,7 +32,7 @@ let io = new Server(server);
 io.on('connection', (socket) => {
     console.log(`Client connected with ID: ${socket.id}`);
     socket.on('online', (socket) => {
-        app.use('/user', login);
+        app.use('/auth', login);
     });
     socket.emit('newMessage', {
         from: 'firas',

@@ -2,7 +2,7 @@ import { User } from '../dataBase/entities/User.js';
 import {isEmail} from 'class-validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import express from 'express';
+import {Request,Response} from 'express';
 
 
 export const registerUser = async (Username:string, email:string, password:string) => {
@@ -48,12 +48,11 @@ export const registerUser = async (Username:string, email:string, password:strin
 
     
     // Login Function
-    export const login = async (email: string, password: string) => {
+    export const login = async (email: string, password: string,onlinestatus:boolean) => {
         try {
           if (!email || !password) {
             return { success: false, msg: 'Please enter all fields' };
           }
-      
           const user = await User.findOne({ where: { Email: email } });
           if (!user) {
             return { success: false, msg: 'User does not exist' };
@@ -71,6 +70,7 @@ export const registerUser = async (Username:string, email:string, password:strin
           const token = jwt.sign({ email: user.Email }, process.env.JWT_SECRET || '', {
             expiresIn: '30m',
           });
+          user.OnlineStatus= onlinestatus;
       
           return { success: true, token, user: user.Username  };
         } catch (error) {
@@ -84,9 +84,9 @@ export const registerUser = async (Username:string, email:string, password:strin
 
       export const deleteUser = async (Username: string) => {
   try {
-    const user = await User.findOne({ where: { Username: Username } });
+    const user:any = await User.findOne({ where: { Username: Username } });
 
-    if (user) {
+    if (user.OnlineStatus===true) {
       await user.remove();
       return { success: true };
     } else {
@@ -101,25 +101,26 @@ export const registerUser = async (Username:string, email:string, password:strin
 
 
 
-export const logout = async (req:express.Request,res:express.Response) => {
+export const logout = (req:Request, res:Response) => {
+  // Clear the cookies
+  res.clearCookie('Username');
+  res.clearCookie('token');
 
-  //     req.session.destroy((err) => {
-  //   if (err) {
-  //     console.log(err);
-  //     res.status(500).json({ message: 'Server error' });
-  //   } else {
-  //     res.clearCookie("sid"); // clear cookie session id 
+  // If using sessions, destroy the session
+  if (req.session) {
+    req.session.destroy((err:any) => {
+      if (err) {
+        console.error('Error destroying session:', err);
+        res.status(500).json({ message: 'Server error' });
+      } else {
+        res.status(200).json({ message: 'User logged out successfully' });
+      }
+    });
+  } else {
+    // If not using sessions, you can just respond with success
+    res.status(200).json({ message: 'User logged out successfully' });
+  }
+};
 
-  //     res.status(200).json({ message: 'User logged out successfully' });    
-  //   }
-  // });
 
-    res.cookie('userName', '', {
-    maxAge: -1,  // This means the cookie will be deleted
-    expires: new Date(Date.now() - 1000)
-  });
-   res.cookie('token', '', {
-    maxAge: -1
-  });
-  res.status(200).json({ message: 'User logged out successfully' });
-}
+
