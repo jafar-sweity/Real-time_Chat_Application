@@ -8,6 +8,7 @@ import { Message } from './entities/Message.js';
 import { UserBlock } from './entities/UserBlock.js';
 import { UserMute } from './entities/UserMute.js';
 import { UserRoles } from './entities/UserRoles.js';
+import { Attachment } from './entities/Attachment.js';
 
 // const dataSource = new DataSource ({
 //     type: 'mysql',
@@ -30,8 +31,9 @@ const dataSource = new DataSource ({
   password:process.env.DB_PASSWORD,
   database:process.env.DB_NAME,
   synchronize:true,
-  logging:false,
-  entities: [User,ChatRoom,Message,Permission,UserBlock,UserMute,UserRoles]
+  logging:true,
+
+  entities: [User,ChatRoom,Message,Permission,UserBlock,UserMute,UserRoles,Attachment]
 })
 
 
