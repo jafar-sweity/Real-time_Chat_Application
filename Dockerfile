@@ -15,7 +15,7 @@ RUN apk add curl
 # Now copy the project files
 COPY . .
 # Build the app
-RUN npm run build
+RUN npm run build-tsc
 
 HEALTHCHECK --interval=10s --timeout=3s \
     CMD curl -f http://localhost/ || exit 1
