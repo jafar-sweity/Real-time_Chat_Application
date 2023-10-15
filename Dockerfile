@@ -8,11 +8,12 @@ WORKDIR /usr/app
 COPY package.json package-lock.json ./
 
 # Execute a command while building the container
-RUN npm ci 
+RUN npm ci \
+    apk add --no-cache curl
 
 RUN apk add curl
 # Now copy the project files
-ADD . . 
+COPY . .
 # Build the app
 RUN npm run dev
 HEALTHCHECK --interval=10s --timeout=3s \
