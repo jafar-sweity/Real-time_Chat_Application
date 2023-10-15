@@ -1,26 +1,25 @@
 import { BaseEntity, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User.js";
 import { JoinTable } from "typeorm";
+import { Relation } from "typeorm";
 
 @Entity()
 export class ChatRoom extends BaseEntity {
     @PrimaryGeneratedColumn('increment')
-    ChatRoomID: number
+    ChatRoomID:number
 
     @Column({ default: "group" })
     Name: string
 
     @Column({
-        type: 'enum',
-        enum: ['private', 'group'],
-        default: 'private'
+        default: 'private', nullable:true
     })
-    Type: 'private' | 'group'
+    Type: string
 
-    @Column({type:'timestamp' , default:()=>'CURRENT_TIMESTAMP'})
+    @Column({type:'timestamp'})
     creationDate : Date;
 
     @ManyToMany(() => User)
     @JoinTable()
-    user: User[]
+    user: Relation<User>    
 }

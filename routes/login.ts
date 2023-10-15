@@ -10,7 +10,8 @@ const router = express();
 
 
 router.post('/login', async (req, res) => {
-  const { Email, Password } = req.body;
+  const Email = req.body.Email;
+  const Password = req.body.Password;
   const onlinestatus:boolean = true;
 
   const result = await login(Email, Password,onlinestatus); // Access io instance from req
@@ -30,6 +31,7 @@ router.post('/login', async (req, res) => {
     res.status(404).json({ msg: result.msg });
   }
 });
+
 
 
 export default router;

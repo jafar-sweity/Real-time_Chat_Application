@@ -12,16 +12,13 @@ import {
 } from "typeorm";
 import { User } from "./User.js";
 import { ChatRoom } from "./Chatroom.js";
-import { Relation } from "typeorm/browser";
+import { Relation } from "typeorm";
 import { Attachment } from "../../dataBase/entities/Attachment.js";
 
 @Entity()
 export class Message extends BaseEntity {
     @PrimaryGeneratedColumn('increment')
     MessageID: number
-
-    @Column()
-    SenderUserId: string;
 
     @Column({ nullable: false })
     Content: string;

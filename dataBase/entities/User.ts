@@ -66,6 +66,6 @@ export class User extends BaseEntity {
   roles: UserRoles[];
 
   @OneToMany(() => Message, message => message.user) 
-  messages: Message;
+  messages: Message[];
 
 }

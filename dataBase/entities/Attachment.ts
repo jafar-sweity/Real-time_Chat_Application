@@ -1,7 +1,7 @@
 import { BaseEntity, Column, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Message } from "./Message.js";
 import { Entity } from "typeorm";
-import { Relation } from "typeorm/browser";
+import { Relation } from "typeorm";
 import { JoinColumn } from "typeorm/browser";
 
 @Entity()

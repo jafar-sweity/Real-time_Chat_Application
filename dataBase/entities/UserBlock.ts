@@ -1,6 +1,6 @@
 import { BaseEntity , Entity, PrimaryGeneratedColumn, OneToOne,ManyToOne,JoinColumn} from "typeorm";
 import { User } from "./User.js";
-import { Relation } from "typeorm/browser";
+import { Relation } from "typeorm";
 
 @Entity()
 export class UserBlock extends BaseEntity{

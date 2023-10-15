@@ -2,9 +2,11 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import dataSource from './dataBase/dataSource.js';
+import register from './routes/register.js';
 import login from './routes/login.js';
 import path from 'path';
 import { sendMessage } from './controllers/MessageController.js';
+import router from './routes/chatroom.js';
 const app = express();
 let server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
@@ -32,8 +34,10 @@ let io = new Server(server);
 io.on('connection', (socket) => {
     console.log(`Client connected with ID: ${socket.id}`);
     socket.on('online', (socket) => {
-        app.use('/auth', login);
     });
+    app.use('/auth', register);
+    app.use('/auth', login);
+    app.use('/chatroom', router);
     socket.emit('newMessage', {
         from: 'firas',
         text: 'hello everybody',
@@ -44,14 +48,14 @@ io.on('connection', (socket) => {
         text: 'new user joined',
         CreatedAt: new Date().getTime()
     });
-    socket.on('createMessage', (message) => {
-        sendMessage(socket.id, message.text);
-        console.log('message', message);
+    socket.on('createMessage', () => {
+        const thing = app.use('/Message', sendMessage);
+        console.log('message', thing.text);
         // Emit the message to all connected clients, including the sender
         io.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            CreatedAt: new Date().getTime()
+            from: thing.from,
+            text: thing.text,
+            CreatedAt: thing.createdAt
         });
     });
     socket.on('disconnect', () => {
