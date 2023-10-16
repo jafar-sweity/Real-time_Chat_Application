@@ -1,19 +1,45 @@
 #!/bin/bash
-set -e
 
-sudo apt update
-sudo apt upgrade -y
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+# Create a non-root user
+sudo useradd -m -s /bin/bash appuser
 
-sudo apt install nodejs curl -y
+# Switch to the non-root user
+sudo su - appuser
 
-cd /home/ubuntu
-git clone https://github.com/jafar-sweity/Real-time_Chat_Application.git  app
+# Set the environment variable for the repository URL
+export REPO_URL="https://github.com/jafar-sweity/Real-time_Chat_Application.git"
 
-cd app && npm install
-npm run dev
+# Clone the Git repository and install dependencies
+cd /home/appuser
+git clone $REPO_URL app
+cd app
+npm install
 
-sudo mv ./infrastructure/app.service /etc/systemd/system/
+# Install PM2 for process management
+npm install pm2 -g
+
+# Start the Node.js application using PM2
+pm2 start npm --name "chat-app" -- start
+
+# Create a systemd service unit file
+sudo tee /etc/systemd/system/chat-app.service << EOF
+[Unit]
+Description=Chat Application Service
+After=network.target
+
+[Service]
+User=appuser
+Environment=NODE_ENV=production
+ExecStart=/home/appuser/app/node_modules/.bin/pm2 start chat-app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Reload systemd and enable the service
 sudo systemctl daemon-reload
-sudo systemctl enable app.service
-sudo reboot
+sudo systemctl enable chat-app.service
+
+# Restart systemd to apply service changes
+sudo systemctl restart systemd

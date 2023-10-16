@@ -68,8 +68,8 @@ let io = new Server(server);
       app.use('/auth',register);
       app.use('/auth',login);
       app.use('/chatroom',chatroom);
-      app.use('/Message',sendMessage)
-
+         app.use('/Message',sendMessage)
+      
       socket.emit('newMessage',{
         from:'firas',
         text:'hello everybody',
@@ -80,16 +80,14 @@ let io = new Server(server);
         text:'new user joined',
         CreatedAt : new Date().getTime()
       })
-    
+      
       socket.on('createMessage', () => {
-       
-        // console.log('message', thing.text );
-    
+        
+        // console.log('message', sendMessage );
+        
         // // Emit the message to all connected clients, including the sender
         // io.emit('newMessage', {
-        //   from: thing.from,
-        //   text: thing.text,
-        //   CreatedAt: thing.createdAt
+        //     Message:sendMessage
         // });
       });
     
@@ -98,6 +96,7 @@ let io = new Server(server);
       });
     });
     
+
 
   
 
