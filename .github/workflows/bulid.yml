@@ -1,0 +1,31 @@
+name: Build and Publish Docker Image
+
+on:
+  push:
+    branches:
+      - jafar
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Build and tag Docker image
+        run: |
+          docker build -t  real-time-chat-app .
+          docker tag real-time-chat-app real-time-chat-app:${{ github.sha }}
+
+      - name: Push Docker images to Docker Hub
+        run: |
+          docker push real-time-chat-app
+
+          docker push real-time-chat-app:${{ github.sha }}
