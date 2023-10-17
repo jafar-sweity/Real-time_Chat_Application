@@ -9,7 +9,7 @@ COPY package.json package-lock.json ./
 
 # Execute a command while building the container
 RUN npm ci \
-    apk add --no-cache curl
+    apk  --no-cache add curl bash
 
 RUN apk add curl
 # Now copy the project files
@@ -20,4 +20,4 @@ RUN npm run build-tsc
 HEALTHCHECK --interval=10s --timeout=3s \
     CMD curl -f http://localhost/ || exit 1
 # When running the container, execute the following command
-CMD node ./dist/index.js
+CMD ["npm", "run", "dev"]

@@ -23,8 +23,6 @@ const PORT = process.env.PORT ||3000;
 
 
 
-
-
 const publicPath = path.join("./public/");
 
 
