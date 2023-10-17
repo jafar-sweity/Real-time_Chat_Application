@@ -5,7 +5,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import express from 'express' 
 import { Message } from '../dataBase/entities/Message.js';
-
 export const authorization=  (Name:string)=>{
   
    
