@@ -66,7 +66,7 @@ io.on('connection', (socket) => {
 //   app.use(`/users`, register);
 //   console.log(`the user with id ${socket.id }is online `)
 // })
-server.listen(80, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on PORT ${PORT}`);
     dataSource.initializeDB();
 });
