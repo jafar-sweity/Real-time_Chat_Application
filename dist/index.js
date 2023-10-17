@@ -50,12 +50,10 @@ io.on('connection', (socket) => {
         CreatedAt: new Date().getTime()
     });
     socket.on('createMessage', () => {
-        // console.log('message', thing.text );
+        // console.log('message', sendMessage );
         // // Emit the message to all connected clients, including the sender
         // io.emit('newMessage', {
-        //   from: thing.from,
-        //   text: thing.text,
-        //   CreatedAt: thing.createdAt
+        //     Message:sendMessage
         // });
     });
     socket.on('disconnect', () => {
