@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - jafar
+      - firas
   pull_request:
     branches:
       - main
