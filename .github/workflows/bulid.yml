@@ -38,12 +38,10 @@ jobs:
           docker build -t rjafarsw/real-time-chat .
           docker tag rjafarsw/real-time-chat:latest rjafarsw/real-time-chat:${{ github.sha }}
 
-
       - name: Push Docker image to Docker Hub
         run: |
-          docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_PAT
-          docker push real-time-chat:latest
-          docker push real-time-chat:${{ github.sha }}
+          docker push rjafarsw/real-time-chat:latest
+          docker push rjafarsw/real-time-chat:${{ github.sha }}
 
         env:
           DOCKER_PAT: ${{ secrets.PAT }}
