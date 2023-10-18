@@ -40,6 +40,7 @@ jobs:
  
       - name: Push Docker image to Docker Hub
         run: |
-          docker-compose -f docker-compose.yml push jafarsw/real-time-chat
+         run: docker -f docker-compose.yml push app
+              docker push jafarsw/real-time-chat:latest
         env:
           DOCKER_PAT: ${{ secrets.PAT }}
