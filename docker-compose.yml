@@ -14,7 +14,7 @@ services:
       retries: 10
 
   app:
-    image: real-time-chat
+    image: jafarsw/real-time-chat
     container_name: final-project
     build: .
     environment:
