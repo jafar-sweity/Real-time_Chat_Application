@@ -30,18 +30,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set GITHUB_SHA environment variable
+        run: echo "GITHUB_SHA=${{ github.sha }}" >> .env
+
       - name: Log in to Docker Hub
         run: echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin
 
-      - name: Set up Docker Compose
-        run: |
-          docker build -t jafarsw/real-time-chat .
-          docker tag jafarsw/real-time-chat:latest jafarsw/real-time-chat:${{ github.sha }}
+      - name: Build Docker image with dynamic tag
+        run: docker-compose -f docker-compose.yml build
 
       - name: Push Docker image to Docker Hub
-        run: |
-          docker push jafarsw/real-time-chat:latest
-          docker push jafarsw/real-time-chat:${{ github.sha }}
-
-        env:
-          DOCKER_PAT: ${{ secrets.PAT }}
+        run: docker-compose -f docker-compose.yml push
