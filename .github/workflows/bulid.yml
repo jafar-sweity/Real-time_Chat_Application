@@ -39,6 +39,8 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: |
           docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_PAT
-          docker-compose -f docker-compose.yml push
+          docker push docker-compose.yml:latest
+          docker push docker-compose.yml:${{ github.sha }}
+
         env:
           DOCKER_PAT: ${{ secrets.PAT }}
