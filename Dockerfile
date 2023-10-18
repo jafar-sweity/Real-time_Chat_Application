@@ -11,6 +11,9 @@ COPY package.json package-lock.json ./
 RUN npm ci \
     apk  --no-cache add curl bash
 
+RUN npm ci && \
+    apk  --no-cache add curl bash
+
 RUN apk add curl
 # Now copy the project files
 COPY . .
