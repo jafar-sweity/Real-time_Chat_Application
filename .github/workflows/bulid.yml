@@ -13,6 +13,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: my_database_name
+      DB_HOST: database_host
+      DB_USER_NAME: database_user_name
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
