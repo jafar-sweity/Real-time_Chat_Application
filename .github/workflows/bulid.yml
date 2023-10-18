@@ -9,7 +9,7 @@ on:
   pull_request:
     branches:
       - main
-jjobs:
+jobs:
   build:
     runs-on: ubuntu-latest
 
