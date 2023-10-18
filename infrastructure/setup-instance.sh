@@ -39,5 +39,14 @@ EOF
 
 # Reload systemd and enable the service
 sudo systemctl daemon-reload
+<<<<<<< HEAD
 sudo systemctl enable app.service
+
 sudo reboot
+
+=======
+sudo systemctl enable chat-app.service
+
+# Restart systemd to apply service changes
+sudo systemctl restart systemd
+>>>>>>> origin/firas
