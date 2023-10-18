@@ -14,10 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_NAME: my_database_name
-      DB_HOST: database_host
-      DB_USER_NAME: database_user_name
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
       - name: Checkout code
@@ -27,9 +25,6 @@ jobs:
         run: docker-compose -f docker-compose.yml build
 
       - name: Log in to Docker Hub
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 
       - name: Push Docker image to Docker Hub
