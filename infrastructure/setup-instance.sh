@@ -48,6 +48,3 @@ docker run -it --rm -p 80:80 \
   -e PORT \
   jafarsw/real-time-chat:latest
 
-
-
-sudo reboot
