@@ -2,4 +2,4 @@
 .env
 Dockerfile
 /dist
-
+docker-compose*
