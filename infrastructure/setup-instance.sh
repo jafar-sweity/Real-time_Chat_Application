@@ -48,5 +48,6 @@ sudo reboot
 sudo systemctl enable chat-app.service
 
 # Restart systemd to apply service changes
+
 sudo systemctl restart systemd
 >>>>>>> origin/firas
