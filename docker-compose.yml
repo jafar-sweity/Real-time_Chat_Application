@@ -14,15 +14,16 @@ services:
       retries: 10
 
   app:
-    image: real-time-chat
+    image: jafarsw/real-time-chat
     container_name: final-project
     build: .
     environment:
       - PORT=3000
-      - DB_HOST=${DB_HOST}
-      - DB_USER=${DB_USER_NAME}
+      - DB_HOST=${DB_HOST}  
+      - DB_USER_NAME=${DB_USER_NAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
+    
     ports:
       - 3000:3000
     healthcheck:
