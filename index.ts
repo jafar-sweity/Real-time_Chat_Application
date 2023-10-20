@@ -15,6 +15,7 @@ import connection from './routes/connection.js';
 import sendMessage from './routes/sendMessage.js';
 import { Message } from './dataBase/entities/Message.js';
 import chatroom from './routes/chatroom.js';
+import bodyParser from 'body-parser';
 
 
 const app:any = express();
@@ -28,6 +29,7 @@ const publicPath = path.join("./public/");
 
 app.use(express.static(publicPath));
 
+app.use(bodyParser.json());
 
 let io = new Server(server);
 

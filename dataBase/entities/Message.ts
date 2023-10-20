@@ -26,14 +26,14 @@ export class Message extends BaseEntity {
     @CreateDateColumn({ type: 'timestamp' })
     Timestamp: Date ;
 
-    @Column({nullable:true})
-    ChatRoomID: number
+    @ManyToOne(() => ChatRoom, chatRoom => chatRoom.messages)
+    chatRoom: Relation<ChatRoom>;
 
    
     @ManyToOne(() => User , user=>user.messages)
     user: Relation<User>
 
-    @OneToOne(()=>Attachment , attachment=>attachment.message)
+    @OneToOne(()=>Attachment , attachment=>attachment.message,{nullable:true})
     @JoinColumn()
     attachment:Relation<Attachment>
 
