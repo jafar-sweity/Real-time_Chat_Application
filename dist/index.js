@@ -7,11 +7,13 @@ import login from './routes/login.js';
 import path from 'path';
 import sendMessage from './routes/sendMessage.js';
 import chatroom from './routes/chatroom.js';
+import bodyParser from 'body-parser';
 const app = express();
 let server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 const publicPath = path.join("./public/");
 app.use(express.static(publicPath));
+app.use(bodyParser.json());
 let io = new Server(server);
 // const socketIOMiddleware = (socket: socket.Socket) =>{
 //   if (!socket.request) {
