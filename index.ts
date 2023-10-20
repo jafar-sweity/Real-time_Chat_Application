@@ -32,7 +32,6 @@ const publicPath = path.join("./public/");
 app.use(express.static(publicPath));
 
 app.use(bodyParser.json());
-app.use(cookieParser.JSONCookie)
 
 let io = new Server(server);
 

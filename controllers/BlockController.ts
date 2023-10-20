@@ -36,6 +36,7 @@ export const BlockUser = async (req: express.Request, res: express.Response) => 
     userBlock.Blocked = Blocked;
     userBlock.Blocker = Blocker;
 
+    
     await UserBlock.save(userBlock);
 
     res.status(200).send({ message: 'User blocked successfully' });
