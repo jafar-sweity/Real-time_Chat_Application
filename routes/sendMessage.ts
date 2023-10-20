@@ -7,8 +7,4 @@ const router = express.Router();
 
 router.use(bodyParser.json());
 
-export default router.post('/send',  sendMessage
-)
-  
-
-
+export default router.post('/send',  sendMessage);
