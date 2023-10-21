@@ -8,13 +8,13 @@ export class UserBlock extends BaseEntity{
     BlockId : string
 
  
-    @ManyToOne(()=>User,user=>user.UserId)
-    @JoinColumn()
-    Blocker : Relation<User>
+    @ManyToOne(()=>User,user=>user.blockedUsers)
+    @JoinColumn({ name: 'blockerUserId' }) 
+    Blocker : any
 
 
-    @OneToOne (()=>User, user=>user.UserId)
-    @JoinColumn()
-    Blocked: Relation<User>
+    @OneToOne (()=>User)
+    @JoinColumn({ name: 'blockedUserId' }) 
+    Blocked: any
 
 }

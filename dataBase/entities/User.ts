@@ -10,6 +10,7 @@ import {
   ManyToMany,
   JoinTable,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 import { IsEmail, Length } from 'class-validator';
 
@@ -56,8 +57,12 @@ export class User extends BaseEntity {
   chatRooms: ChatRoom[];
   
 
-  @OneToMany(() => UserBlock, userBlock => userBlock.Blocked)
-  blockedUsers: UserBlock;
+    @OneToMany(() => UserBlock, (userBlock) => userBlock.Blocked)
+  blockedUsers: UserBlock[];
+
+  
+ 
+
 
   @OneToMany(() => UserMute, userMute => userMute.MutedId)
   mutedUsers: UserMute[];
