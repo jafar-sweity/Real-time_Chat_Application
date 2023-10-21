@@ -26,7 +26,7 @@ export class Message extends BaseEntity {
     @CreateDateColumn({ type: 'timestamp' })
     Timestamp: Date ;
 
-    @ManyToOne(() => ChatRoom, chatRoom => chatRoom.messages)
+    @ManyToOne(() => ChatRoom, chatRoom => chatRoom.ChatRoomID)
     chatRoom: Relation<ChatRoom>;
 
    
