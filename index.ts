@@ -19,6 +19,7 @@ import bodyParser from 'body-parser';
 import Block from './routes/Block.js';
 import cookieParser from 'cookie-parser';
 import unBlock from './routes/unBlock.js';
+import listMessages from './routes/listMessages.js';
 
 
 const app = express();
@@ -69,6 +70,7 @@ let io = new Server(server);
       app.use('/auth',login);
       app.use('/chatroom',chatroom);
          app.use('/Message',sendMessage);
+         app.use('/Message',listMessages);
          app.use('/user',Block);
          app.use('/user',unBlock);
          
