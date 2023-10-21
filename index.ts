@@ -18,6 +18,7 @@ import chatroom from './routes/chatroom.js';
 import bodyParser from 'body-parser';
 import Block from './routes/Block.js';
 import cookieParser from 'cookie-parser';
+import unBlock from './routes/unBlock.js';
 
 
 const app = express();
@@ -69,8 +70,9 @@ let io = new Server(server);
       app.use('/chatroom',chatroom);
          app.use('/Message',sendMessage);
          app.use('/user',Block);
-      
-      socket.emit('newMessage',{
+         app.use('/user',unBlock);
+         
+         socket.emit('newMessage',{
         from:'firas',
         text:'hello everybody',
         CreatedAt : new Date().getTime()

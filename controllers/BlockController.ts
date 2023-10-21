@@ -1,6 +1,8 @@
 import express from 'express';
 import { User } from '../dataBase/entities/User.js';
 import { UserBlock } from '../dataBase/entities/UserBlock.js';
+import { log } from 'console';
+
 
 
 export const BlockUser = async (req: express.Request, res: express.Response) => {
@@ -13,7 +15,6 @@ export const BlockUser = async (req: express.Request, res: express.Response) => 
       return;
     }
 
-  
     const Blocked = await User.findOne({ where: { Username: blocked } });
     const Blocker = await User.findOne({ where: { Username: BlockerUsername } });
 
@@ -34,7 +35,7 @@ export const BlockUser = async (req: express.Request, res: express.Response) => 
 
     const userBlock = new UserBlock();
     userBlock.Blocked = Blocked;
-    userBlock.Blocker = Blocker;
+    userBlock.Blocker.push(Blocker);
 
     await userBlock.save();
 
@@ -44,42 +45,36 @@ export const BlockUser = async (req: express.Request, res: express.Response) => 
   }
 };
 
-
-
+// Unblock a user
 export const UnblockUser = async (req: express.Request, res: express.Response) => {
   try {
     const { unblocked } = req.body;
     const BlockerUsername = req.cookies['Username'];
 
     if (!BlockerUsername) {
-      res.status(401).send({ message: 'Please log in to unblock users.' });
-      return;
+      return res.status(401).json({ message: 'Please log in to unblock users.' });
     }
 
     const Unblocked = await User.findOne({ where: { Username: unblocked } });
     const Blocker = await User.findOne({ where: { Username: BlockerUsername } });
 
     if (!Unblocked || !Blocker) {
-      res.status(404).send({ message: 'User not found' });
-      return;
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    // Find the UserBlock entity to delete
     const existingBlock = await UserBlock.findOne({
-      where: { Blocked: Unblocked, Blocker: Blocker },
+      where: { Blocked: Unblocked, Blocker },
     });
 
     if (!existingBlock) {
-      res.status(404).send({ message: 'User is not blocked' });
-      return;
+      return res.status(400).json({ message: 'User is not blocked' });
     }
-
 
     await UserBlock.remove(existingBlock);
 
-    res.status(200).send({ message: 'User unblocked successfully' });
-  
+    return res.status(200).json({ message: 'User unblocked successfully' });
   } catch (error) {
-    res.status(500).send({ message: 'An error occurred while unblocking the user.' });
+    console.error('Error in UnblockUser:', error);
+    return res.status(500).json({ message: 'An error occurred while unblocking the user.' });
   }
 };
