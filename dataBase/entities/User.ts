@@ -56,8 +56,11 @@ export class User extends BaseEntity {
   chatRooms: ChatRoom[];
   
 
-  @OneToMany(() => UserBlock, userBlock => userBlock.Blocked)
+    @OneToMany(() => UserBlock, (userBlock) => userBlock.Blocked)
   blockedUsers: UserBlock[];
+
+  @OneToMany(() => UserBlock, (userBlock) => userBlock.Blocker)
+  blockedBy: UserBlock[];
 
   @OneToMany(() => UserMute, userMute => userMute.MutedId)
   mutedUsers: UserMute[];

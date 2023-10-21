@@ -17,7 +17,7 @@ export class ChatRoom extends BaseEntity {
     @PrimaryGeneratedColumn('increment')
     ChatRoomID: number
 
-    @Column({ default: "group" })
+    @Column()
     Name: string
 
     @Column({
@@ -26,12 +26,12 @@ export class ChatRoom extends BaseEntity {
     })
     Type: string
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp' , default: () => 'CURRENT_TIMESTAMP'})
     creationDate: Date;
 
     @ManyToMany(() => User)
     @JoinTable()
-    user: User[];
+    user: Relation<User>[];
 
     @OneToMany(() => Message, message => message.chatRoom)
     @JoinColumn()

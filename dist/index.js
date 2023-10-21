@@ -10,13 +10,15 @@ import chatroom from './routes/chatroom.js';
 import bodyParser from 'body-parser';
 import Block from './routes/Block.js';
 import cookieParser from 'cookie-parser';
+import unBlock from './routes/unBlock.js';
 const app = express();
 let server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 const publicPath = path.join("./public/");
 app.use(express.static(publicPath));
+app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(cookieParser.JSONCookie);
+app.use(express.json());
 let io = new Server(server);
 // const socketIOMiddleware = (socket: socket.Socket) =>{
 //   if (!socket.request) {
@@ -45,6 +47,7 @@ io.on('connection', (socket) => {
     app.use('/chatroom', chatroom);
     app.use('/Message', sendMessage);
     app.use('/user', Block);
+    app.use('/user', unBlock);
     socket.emit('newMessage', {
         from: 'firas',
         text: 'hello everybody',
