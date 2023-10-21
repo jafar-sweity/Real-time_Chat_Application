@@ -2,53 +2,77 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link href="style.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Chat app</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"
+    integrity="sha512-Xm9qbB6Pu06k3PUwPj785dyTl6oHxgsv9nHp7ej7nCpAqGZT3OZpsELuCYX05DdonFpTlBpXMOxjavIAIUwr0w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script defer src="app.js"></script>
   </head>
   <body>
-    <h1>welcome to final-project tested page</h1>
-    <input type="text" id="message" />
-    <input type="submit" id="submit" />
-    <div id="messagesContainer">
-      <!-- Existing messages or an empty container -->
-    </div>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script type="text/javascript">
-      const socket = io();
-      const submit = document.getElementById("submit");
-      const messagesContainer = document.getElementById("messagesContainer");
-
-      submit.addEventListener("click", () => {
-        const messageInput = document.getElementById("message");
-        const message = messageInput.value; // Get the message from the input field
-
-        // Send the message to the server
-        socket.emit("createMessage", {
-          from: "FKM",
-          text: message,
+    <main>
+      
+      <h1 style="text-align: center;">welcome to online Chat app</h1>
+  
+      <form class="form-join">
+  
+        <input type="text" id="name" maxlength="8" placeholder="your name" size="5"
+        required />
+        <input type="submit" id="room" placeholder="Chat room" size="5" required />
+        <button id="join" type="submit">Join</button>
+        <div id="messagesContainer">
+          <!-- Existing messages or an empty container -->
+      </form>
+  
+      <ul class="chat-display">
+        <p class="user-list"></p>
+        <p class="room-list"></p>
+        <p class="activity"></p>
+      </ul>
+      <form class="from-msg">
+        <input type="text" id="message" placeholder="you message" required>
+        <button type="submit">send</button>
+      </form>
+      </div>
+  
+      <script src="/socket.io/socket.io.js"></script>
+      <script type="text/javascript">
+        const socket = io();
+        const submit = document.getElementById("submit");
+        const messagesContainer = document.getElementById("messagesContainer");
+  
+        submit.addEventListener("click", () => {
+          const messageInput = document.getElementById("message");
+          const message = messageInput.value; // Get the message from the input field
+  
+          // Send the message to the server
+          socket.emit("createMessage", {
+            from: "FKM",
+            text: message,
+          });
+  
+          messageInput.value = "";
         });
-
-        messageInput.value = "";
-      });
-
-      socket.on("newMessage", (message) => {
-        const messageElement = document.createElement("label");
-        messageElement.textContent = `${message.from}: ${message.text}`;
-
-        const lineBreak = document.createElement("br");
-
-        messagesContainer.appendChild(messageElement);
-        messagesContainer.appendChild(lineBreak);
-      });
-
-      socket.on("connect", () => {
-        console.log("Client connected");
-      });
-
-      socket.on("disconnect", () => {
-        console.log("Client disconnected");
-      });
-    </script>
-  </body>
+  
+        socket.on("newMessage", (message) => {
+          const messageElement = document.createElement("label");
+          messageElement.textContent = `${message.from}: ${message.text}`;
+  
+          const lineBreak = document.createElement("br");
+  
+          messagesContainer.appendChild(messageElement);
+          messagesContainer.appendChild(lineBreak);
+        });
+  
+        socket.on("connect", () => {
+          console.log("Client connected");
+        });
+  
+        socket.on("disconnect", () => {
+          console.log("Client disconnected");
+        });
+      </script>
+    </body>
+    </main>
 </html>

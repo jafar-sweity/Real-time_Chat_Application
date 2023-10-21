@@ -17,6 +17,7 @@ const publicPath = path.join("./public/");
 app.use(express.static(publicPath));
 app.use(cookieParser());
 app.use(bodyParser.json());
+app.use(express.json());
 let io = new Server(server);
 // const socketIOMiddleware = (socket: socket.Socket) =>{
 //   if (!socket.request) {
