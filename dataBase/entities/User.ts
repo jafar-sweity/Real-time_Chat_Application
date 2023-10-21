@@ -57,7 +57,7 @@ export class User extends BaseEntity {
   
 
   @OneToMany(() => UserBlock, userBlock => userBlock.Blocked)
-  blockedUsers: UserBlock[];
+  blockedUsers: UserBlock;
 
   @OneToMany(() => UserMute, userMute => userMute.MutedId)
   mutedUsers: UserMute[];

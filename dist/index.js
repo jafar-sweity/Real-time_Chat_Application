@@ -15,8 +15,8 @@ let server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 const publicPath = path.join("./public/");
 app.use(express.static(publicPath));
+app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(cookieParser.JSONCookie);
 let io = new Server(server);
 // const socketIOMiddleware = (socket: socket.Socket) =>{
 //   if (!socket.request) {

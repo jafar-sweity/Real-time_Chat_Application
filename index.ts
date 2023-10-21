@@ -20,17 +20,14 @@ import Block from './routes/Block.js';
 import cookieParser from 'cookie-parser';
 
 
-const app:any = express();
+const app = express();
 let server = http.createServer(app);
 const PORT = process.env.PORT ||3000;
-
-
-
 const publicPath = path.join("./public/");
 
 
 app.use(express.static(publicPath));
-
+app.use(cookieParser());
 app.use(bodyParser.json());
 
 let io = new Server(server);
@@ -70,7 +67,7 @@ let io = new Server(server);
       app.use('/auth',register);
       app.use('/auth',login);
       app.use('/chatroom',chatroom);
-         app.use('/Message',sendMessage)
+         app.use('/Message',sendMessage);
          app.use('/user',Block);
       
       socket.emit('newMessage',{
