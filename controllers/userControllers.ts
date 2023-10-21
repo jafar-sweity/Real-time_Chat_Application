@@ -85,7 +85,7 @@ export const registerUser = async (Username:string, email:string, password:strin
       export const deleteUser = async (Username: string) => {
   try {
     const user:any = await User.findOne({ where: { Username: Username } });
-
+    
     if (user.OnlineStatus===true) {
       await user.remove();
       return { success: true };

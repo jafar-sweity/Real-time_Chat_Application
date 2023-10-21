@@ -54,8 +54,9 @@ export class User extends BaseEntity {
   @ManyToMany(() => ChatRoom)
   @JoinTable()
   chatRooms: ChatRoom[];
+  
 
-  @OneToMany(() => UserBlock, userBlock => userBlock.BlockedId)
+  @OneToMany(() => UserBlock, userBlock => userBlock.Blocked)
   blockedUsers: UserBlock[];
 
   @OneToMany(() => UserMute, userMute => userMute.MutedId)
@@ -67,5 +68,6 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Message, message => message.user) 
   messages: Message[];
+  
 
 }

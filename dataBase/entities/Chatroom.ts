@@ -21,6 +21,7 @@ export class ChatRoom extends BaseEntity {
     Name: string
 
     @Column({
+        
         default: 'private', nullable: true
     })
     Type: string

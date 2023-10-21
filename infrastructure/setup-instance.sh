@@ -1,53 +1,47 @@
-#!/bin/bash
+#!/bin/sh
+set -e
 
-# Create a non-root user
-sudo useradd -m -s /bin/bash appuser
+sudo apt update
+sudo apt upgrade -y
 
-# Switch to the non-root user
-sudo su - appuser
+sudo apt-get install -y ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
 
-# Set the environment variable for the repository URL
-export REPO_URL="https://github.com/jafar-sweity/Real-time_Chat_Application.git"
+# install docker
+for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
 
-# Clone the Git repository and install dependencies
-cd /home/appuser
-git clone $REPO_URL app
-cd app
-npm install
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+# Add the repository to Apt sources:
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
 
-# Install PM2 for process management
-npm install pm2 -g
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+docker pull jafarsw/real-time-chat:latest
+sudo docker run -it -e DB_HOST='final-project.ccft9dbis2c2.eu-west-2.rds.amazonaws.com'  -e DB_PORT=3306  -e DB_USER_NAME=admin -e DB_PASSWORD="12345678" -e DB_NAME='final_project' -e JWT_SECRET='jafrias12ws@39dJXNI@12eiqe9u5casd' -e PORT=80 -d -p 80:80 jafarsw/real-time-chat:latest
 
-# Start the Node.js application using PM2
-pm2 start npm --name "chat-app" -- start
+sudo groupadd docker
+sudo usermod -aG docker $(whoami)
 
-# Create a systemd service unit file
-sudo tee /etc/systemd/system/chat-app.service << EOF
-[Unit]
-Description=Chat Application Service
-After=network.target
+sudo systemctl enable docker.service
+sudo systemctl enable containerd.service
+sudo systemctl start docker.service
+sudo systemctl start containerd.service
 
-[Service]
-User=appuser
-Environment=NODE_ENV=production
-ExecStart=/home/appuser/app/node_modules/.bin/pm2 start chat-app
-Restart=always
 
+<<<<<<<<< Temporary merge branch 1
 [Install]
 WantedBy=multi-user.target
 EOF
 
 # Reload systemd and enable the service
 sudo systemctl daemon-reload
-<<<<<<< HEAD
 sudo systemctl enable app.service
 
 sudo reboot
 
-=======
-sudo systemctl enable chat-app.service
-
-# Restart systemd to apply service changes
-
-sudo systemctl restart systemd
->>>>>>> origin/firas
+=========
+>>>>>>>>> Temporary merge branch 2

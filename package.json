@@ -23,6 +23,7 @@
   "dependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/connect-redis": "^0.0.21",
+    "@types/cookie-parser": "^1.4.5",
     "@types/ioredis": "^5.0.0",
     "@types/socket.io": "^3.0.2",
     "bcrypt": "^5.1.1",
@@ -30,6 +31,7 @@
     "class-validator": "^0.14.0",
     "concurrently": "^8.2.1",
     "connect-redis": "^7.1.0",
+    "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "express-sessions": "^1.0.1",

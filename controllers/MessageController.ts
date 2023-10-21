@@ -8,10 +8,10 @@ import { User } from "../dataBase/entities/User.js";
 
 export const sendMessage = async (req : express.Request, res:express.Response) => {
   try {
-    const Username = req.body.Username;
+    const Username = req.cookies['Username'];
     const ChatRoomName = req.body.ChatRoom;
     const Content = req.body.Content;
-
+    
     const chatRoom = await ChatRoom.findOne({ where: { Name: ChatRoomName } });
 
     if (!chatRoom) {

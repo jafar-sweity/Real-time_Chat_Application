@@ -16,6 +16,8 @@ import sendMessage from './routes/sendMessage.js';
 import { Message } from './dataBase/entities/Message.js';
 import chatroom from './routes/chatroom.js';
 import bodyParser from 'body-parser';
+import Block from './routes/Block.js';
+import cookieParser from 'cookie-parser';
 
 
 const app:any = express();
@@ -69,6 +71,7 @@ let io = new Server(server);
       app.use('/auth',login);
       app.use('/chatroom',chatroom);
          app.use('/Message',sendMessage)
+         app.use('/user',Block);
       
       socket.emit('newMessage',{
         from:'firas',

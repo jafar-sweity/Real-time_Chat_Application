@@ -8,12 +8,15 @@ import path from 'path';
 import sendMessage from './routes/sendMessage.js';
 import chatroom from './routes/chatroom.js';
 import bodyParser from 'body-parser';
+import Block from './routes/Block.js';
+import cookieParser from 'cookie-parser';
 const app = express();
 let server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 const publicPath = path.join("./public/");
 app.use(express.static(publicPath));
 app.use(bodyParser.json());
+app.use(cookieParser.JSONCookie);
 let io = new Server(server);
 // const socketIOMiddleware = (socket: socket.Socket) =>{
 //   if (!socket.request) {
@@ -41,6 +44,7 @@ io.on('connection', (socket) => {
     app.use('/auth', login);
     app.use('/chatroom', chatroom);
     app.use('/Message', sendMessage);
+    app.use('/user', Block);
     socket.emit('newMessage', {
         from: 'firas',
         text: 'hello everybody',
