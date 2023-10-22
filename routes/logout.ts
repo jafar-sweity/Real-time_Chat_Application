@@ -4,6 +4,5 @@ import { logout } from '../controllers/userControllers.js';
 
 const app = express.Router();
 
- app.post('/logout', logout);
+ export default app.post('/logout', logout);
 
- export default app;

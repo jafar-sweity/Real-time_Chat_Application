@@ -2,7 +2,7 @@ import { User } from '../dataBase/entities/User.js';
 import {isEmail} from 'class-validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import {Request,Response} from 'express';
+import express from 'express';
 
 
 export const registerUser = async (Username:string, email:string, password:string) => {
@@ -48,36 +48,47 @@ export const registerUser = async (Username:string, email:string, password:strin
 
     
     // Login Function
-    export const login = async (email: string, password: string,onlinestatus:boolean) => {
-        try {
-          if (!email || !password) {
-            return { success: false, msg: 'Please enter all fields' };
-          }
-          const user = await User.findOne({ where: { Email: email } });
-          if (!user) {
-            return { success: false, msg: 'User does not exist' };
-          }
-      
-          // Compare the provided plaintext password with the stored encrypted password
-          const isMatch = await bcrypt.compare(password, user.Password);
-          if (!isMatch) {
-            return { success: false, msg: 'Invalid credentials' };
-          }
-      
-          // Notify other users that this user is online
-         
-      
-          const token = jwt.sign({ email: user.Email }, process.env.JWT_SECRET || '', {
-            expiresIn: '30m',
-          });
-          user.OnlineStatus= onlinestatus;
-      
-          return { success: true, token, user: user.Username  };
-        } catch (error) {
-          console.error(error);
-          return { success: false, msg: 'Internal server error' };
+    export const login = async (req:express.Request, res:express.Response) => {
+      const email = req.body.Email;
+      const password = req.body.Password;
+    
+      try {
+        if (!email || !password) {
+          return res.status(400).json({ success: false, msg: 'Please enter all fields' });
         }
-      };
+    
+        const user = await User.findOne({ where: { Email: email } });
+        if (!user) {
+          return res.status(401).json({ success: false, msg: 'Invalid credentials' });
+        }
+    
+        const isMatch = await bcrypt.compare(password, user.Password);
+        if (!isMatch) {
+          console.log('Password does not match');
+          return res.status(401).json({ success: false, msg: 'Invalid credentials' });
+        }
+    
+    
+        const token = jwt.sign({ email: user.Email }, process.env.JWT_SECRET || '', {
+          expiresIn: '30m',
+        });
+    
+        await user.save();
+    
+        res.cookie('Username', user.Username, {
+          maxAge: 60 * 60 * 1000
+        });
+    
+        res.cookie('token', token, {
+          maxAge: 60 * 60 * 1000
+        });
+    
+        return res.status(200).json({ success: true, token, user: user.Username });
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, msg: 'Internal server error' });
+      }
+    };
     
 
 
@@ -86,11 +97,8 @@ export const registerUser = async (Username:string, email:string, password:strin
   try {
     const user:any = await User.findOne({ where: { Username: Username } });
     
-    if (user.OnlineStatus===true) {
-      await user.remove();
-      return { success: true };
-    } else {
-      return { success: false, msg: 'User not found' };
+    if (!user) {
+      return { success: false, msg: 'User does not exist' };
     }
   } catch (error) {
     console.error(error);
@@ -101,14 +109,30 @@ export const registerUser = async (Username:string, email:string, password:strin
 
 
 
-export const logout = (req:Request, res:Response) => {
+
+export const logout = async (req:express.Request, res:express.Response) => {
+  const username = req.cookies['Username'];
+  if (!username) {
+    res.status(401).json({ message: 'You must login' });
+    return;
+  }
+
+  // Clear the OnlineStatus for the user
+  const user = await User.findOne({ where: { Username: username } });
+  if (!user) {
+    res.status(401).json({ message: 'User not found' });
+    return;
+  }
+
+  
+
   // Clear the cookies
   res.clearCookie('Username');
   res.clearCookie('token');
 
   // If using sessions, destroy the session
   if (req.session) {
-    req.session.destroy((err:any) => {
+    req.session.destroy((err) => {
       if (err) {
         console.error('Error destroying session:', err);
         res.status(500).json({ message: 'Server error' });
