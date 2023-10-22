@@ -12,6 +12,7 @@ import Block from './routes/Block.js';
 import cookieParser from 'cookie-parser';
 import unBlock from './routes/unBlock.js';
 import listMessages from './routes/listMessages.js';
+import logout from './routes/logout.js';
 const app = express();
 let server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
@@ -45,6 +46,7 @@ io.on('connection', (socket) => {
     });
     app.use('/auth', register);
     app.use('/auth', login);
+    app.use('/auth', logout);
     app.use('/chatroom', chatroom);
     app.use('/Message', sendMessage);
     app.use('/Message', listMessages);

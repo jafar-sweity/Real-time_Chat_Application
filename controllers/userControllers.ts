@@ -71,6 +71,7 @@ export const registerUser = async (Username:string, email:string, password:strin
             expiresIn: '30m',
           });
           user.OnlineStatus= onlinestatus;
+          user.save();
       
           return { success: true, token, user: user.Username  };
         } catch (error) {
