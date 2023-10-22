@@ -8,6 +8,6 @@ const app = express.Router();
 
 
 
-export default app.delete('/unBlock',UnblockUser);
+export default app.post('/unBlock',UnblockUser);
 
 

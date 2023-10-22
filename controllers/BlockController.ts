@@ -53,7 +53,7 @@ export const BlockUser = async (req: express.Request, res: express.Response) => 
 // Unblock a user
 export const UnblockUser = async (req: express.Request, res: express.Response) => {
   try {
-    const { unblocked } = req.body;
+    const { unblocked } = req.body.unblocked;
     const BlockerUsername = req.cookies['Username'];
 
     if (!BlockerUsername) {
@@ -70,8 +70,8 @@ export const UnblockUser = async (req: express.Request, res: express.Response) =
     // Updated query to check for both Blocker and Blocked users
     const existingBlock = await UserBlock.findOne({
       where: {
-        Blocker: { Username: Blocker.Username },
-        Blocked: { Username: Unblocked.Username }
+        Blocker: { UserId: Blocker.UserId },
+        Blocked: { UserId: Unblocked.UserId }
       }
     });
     
