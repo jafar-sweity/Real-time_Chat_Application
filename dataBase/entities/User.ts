@@ -47,8 +47,6 @@ export class User extends BaseEntity {
   @IsEmail()
   Email: string;
 
-  @Column({ default: false })
-  OnlineStatus: boolean;
 
 
   @ManyToMany(() => ChatRoom)
