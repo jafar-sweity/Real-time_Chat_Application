@@ -20,6 +20,8 @@ import cookieParser from 'cookie-parser';
 import unBlock from './routes/unBlock.js';
 import listMessages from './routes/listMessages.js';
 import logout from './routes/logout.js';
+import Mute from './routes/Mute.js';
+import unMute from './routes/unMute.js';
 
 
 const app = express();
@@ -74,6 +76,10 @@ io.on('connection', (socket) => {
   app.use('/Message', listMessages);
   app.use('/user', Block);
   app.use('/user', unBlock);
+  app.use('/user', rmUser); 
+  app.use('/user',Mute);
+  app.use('/user',unMute);
+  
 
 
 
