@@ -78,7 +78,9 @@ export const UnblockUser = async (req: express.Request, res: express.Response) =
     if (!existingBlock) {
       return res.status(400).json({ message: 'User is not blocked' });
     }
-    await UserBlock.remove(existingBlock);
+    await UserBlock.delete(
+      { Blocked: { UserId: Unblocked.UserId }, Blocker: { UserId: Blocker.UserId } },
+    );
 
     return res.status(200).json({ message: 'User unblocked successfully' });
   } catch (error) {
