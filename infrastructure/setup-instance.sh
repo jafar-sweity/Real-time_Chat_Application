@@ -32,3 +32,14 @@ sudo systemctl start docker.service
 sudo systemctl start containerd.service
 
 
+
+
+
+# Reload systemd and enable the service
+sudo systemctl daemon-reload
+sudo systemctl enable app.service
+
+sudo reboot
+
+=========
+>>>>>>>>> Temporary merge branch 2

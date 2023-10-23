@@ -10,7 +10,7 @@
         id : number
 
         @Column({nullable:true ,type:'blob'})
-        Attachment:Buffer
+        Attachment:string
 
         @OneToOne(()=>Message, message =>message.attachment,{cascade:true})
         message:Relation<Message>
