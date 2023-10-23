@@ -16,12 +16,17 @@ import listMessages from './routes/listMessages.js';
 import logout from './routes/logout.js';
 import Mute from './routes/Mute.js';
 import unMute from './routes/unMute.js';
+import uploadAttachmentRouter from './routes/uploadAttachment.js';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 let server = http.createServer(app);
+app.use(cookieParser());
 const PORT = process.env.PORT || 3000;
 const publicPath = path.join("./public/");
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static(publicPath));
-app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(express.json());
 let io = new Server(server);
@@ -58,6 +63,7 @@ io.on('connection', (socket) => {
     app.use('/user', rmUser);
     app.use('/user', Mute);
     app.use('/user', unMute);
+    app.use('/user', uploadAttachmentRouter);
     socket.emit('newMessage', {
         from: 'firas',
         text: 'hello everybody',
