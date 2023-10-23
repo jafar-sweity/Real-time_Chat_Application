@@ -32,8 +32,10 @@ sudo systemctl start docker.service
 sudo systemctl start containerd.service
 
 
-
-
+<<<<<<<<< Temporary merge branch 1
+[Install]
+WantedBy=multi-user.target
+EOF
 
 # Reload systemd and enable the service
 sudo systemctl daemon-reload
