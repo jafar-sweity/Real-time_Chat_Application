@@ -7,9 +7,9 @@ import express from 'express';
 
 export const registerUser = async (Username:string, email:string, password:string) => {
   try {
-    const regexEmail = /[@gmail.com|@yahoo.com|@hotmail.com|@live.com|@outlook.com|@cloud.com]$/;
+const regexEmail = /@(gmail\.com|yahoo\.com|hotmail\.com|live\.com|outlook\.com|cloud\.com)$/;
 
-    if (!regexEmail.test(email) && !isEmail(email)) {
+    if (!regexEmail.test(email) && !isEmail(email)&&!email.includes('@')) {
       return { success: false, msg: 'Invalid email' };
     }
 
@@ -48,24 +48,23 @@ export const registerUser = async (Username:string, email:string, password:strin
 
     
     // Login Function
-    export const login = async (req:express.Request, res:express.Response) => {
-      const email = req.body.Email;
-      const password = req.body.Password;
+    export const login = async (Email:string,Password:string) => {
+      
     
       try {
-        if (!email || !password) {
-          return res.status(400).json({ success: false, msg: 'Please enter all fields' });
+        if (!Email || !Password) {
+          return{ success: false, msg: 'Please enter all fields' };
         }
     
-        const user = await User.findOne({ where: { Email: email } });
+        const user = await User.findOne({ where: { Email: Email } });
         if (!user) {
-          return res.status(401).json({ success: false, msg: 'Invalid credentials' });
+          return { success: false, msg: 'Invalid credentials' };
         }
     
-        const isMatch = await bcrypt.compare(password, user.Password);
+        const isMatch = await bcrypt.compare(Password, user.Password);
         if (!isMatch) {
           console.log('Password does not match');
-          return res.status(401).json({ success: false, msg: 'Invalid credentials' });
+          return { success: false, msg: 'Invalid credentials' };
         }
     
     
@@ -75,18 +74,12 @@ export const registerUser = async (Username:string, email:string, password:strin
     
         await user.save();
     
-        res.cookie('Username', user.Username, {
-          maxAge: 60 * 60 * 1000
-        });
+      
     
-        res.cookie('token', token, {
-          maxAge: 60 * 60 * 1000
-        });
-    
-        return res.status(200).json({ success: true, token, user: user.Username });
+        return { success: true, token, user: user.Username, msg: `Welcome ${user.Username}` };
       } catch (error) {
         console.error(error);
-        return res.status(500).json({ success: false, msg: 'Internal server error' });
+        return { success: false, msg: 'Internal server error' };
       }
     };
     
