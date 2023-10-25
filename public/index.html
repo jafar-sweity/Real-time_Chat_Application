@@ -2,77 +2,281 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link href="style.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat app</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"
-    integrity="sha512-Xm9qbB6Pu06k3PUwPj785dyTl6oHxgsv9nHp7ej7nCpAqGZT3OZpsELuCYX05DdonFpTlBpXMOxjavIAIUwr0w=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script defer src="app.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"
+      integrity="sha512-Xm9qbB6Pu06k3PUwPj785dyTl6oHxgsv9nHp7ej7nCpAqGZT3OZpsELuCYX05DdonFpTlBpXMOxjavIAIUwr0w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
   </head>
   <body>
     <main>
-      
-      <h1 style="text-align: center;">welcome to online Chat app</h1>
-  
-      <form class="form-join">
-  
-        <input type="text" id="name" maxlength="8" placeholder="your name" size="5"
-        required />
-        <input type="submit" id="room" placeholder="Chat room" size="5" required />
-        <button id="join" type="submit">Join</button>
-        <div id="messagesContainer">
-          <!-- Existing messages or an empty container -->
+      <form class="form-join" id="joinForm" method="post">
+        <input
+          type="text"
+          id="name"
+          maxlength="8"
+          placeholder="Your name"
+          size="5"
+          required
+        />
+        <input
+          type="text"
+          id="room"
+          placeholder="Chat room"
+          size="5"
+          required
+        />
+        <button type="submit">Join</button>
       </form>
-  
-      <ul class="chat-display">
-        <p class="user-list"></p>
-        <p class="room-list"></p>
-        <p class="activity"></p>
+
+      <ul class="chat-display" id="messageList">
+        <!-- Existing messages will be added here -->
       </ul>
-      <form class="from-msg">
-        <input type="text" id="message" placeholder="you message" required>
-        <button type="submit">send</button>
+
+      <ul class="chat-display">
+        <li class="user-list"></li>
+        <li class="room-list"></li>
+        <li class="activity"></li>
+      </ul>
+
+      <form class="form-msg" id="messageForm">
+        <input type="text" id="message" placeholder="Your message" required />
+        <button type="submit">Send</button>
       </form>
+
+      <div id="loginInputs" class="login-inputs">
+        <input type="text" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button id="loginButton">Login</button>
       </div>
-  
-      <script src="/socket.io/socket.io.js"></script>
-      <script type="text/javascript">
-        const socket = io();
-        const submit = document.getElementById("submit");
-        const messagesContainer = document.getElementById("messagesContainer");
-  
-        submit.addEventListener("click", () => {
-          const messageInput = document.getElementById("message");
-          const message = messageInput.value; // Get the message from the input field
-  
-          // Send the message to the server
-          socket.emit("createMessage", {
-            from: "FKM",
-            text: message,
-          });
-  
-          messageInput.value = "";
-        });
-  
-        socket.on("newMessage", (message) => {
-          const messageElement = document.createElement("label");
-          messageElement.textContent = `${message.from}: ${message.text}`;
-  
-          const lineBreak = document.createElement("br");
-  
-          messagesContainer.appendChild(messageElement);
-          messagesContainer.appendChild(lineBreak);
-        });
-  
-        socket.on("connect", () => {
-          console.log("Client connected");
-        });
-  
-        socket.on("disconnect", () => {
-          console.log("Client disconnected");
-        });
-      </script>
-    </body>
     </main>
+    <script>
+      const socket = io("ws://localhost:3000");
+      const closeModalButton = document.getElementById("closeModalButton");
+      const modal = document.getElementById("modal");
+      const nameInput = document.getElementById("name");
+      const chatRoom = document.getElementById("room");
+      const activity = document.querySelector(".activity");
+      const usersList = document.querySelector(".user-list");
+      const roomList = document.querySelector(".room-list");
+      const chatDisplay = document.getElementById("messageList");
+      const messageInput = document.getElementById("message");
+      const loginInputs = document.getElementById("loginInputs");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+        let success = false;
+      nameInput.addEventListener("click", () => {
+        if (success) {
+            loginInputs.style.display = "none";
+            document.getElementById('name').disabled = false;
+        } else {
+            document.getElementById('name').disabled = true;
+            loginInputs.style.display = "block";
+            
+        }
+
+      });
+
+      function toggleLoginInputs() {
+        if (
+          loginInputs.style.display === "none" ||
+          loginInputs.style.display === ""
+        ) {
+          loginInputs.style.display = "block";
+        } else {
+          loginInputs.style.display = "none";
+        }
+      }
+      
+      loginButton.addEventListener("click", () => {
+        // Get the email and password entered by the user
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        // Add your login logic here
+        if (email && password) {
+          // Check credentials and perform the login operation
+          fetch("/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              Email: emailInput.value,
+              Password: passwordInput.value,
+            }),
+          })
+            .then((response) => response.json())
+            .then((result) => {
+              if (result.success) {
+                success =true;
+                console.log(result);
+                document.getElementById('name').disabled = false;
+                document.getElementById('name').value = result.user;
+                toggleLoginInputs();
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              // Show an alert when an error occurs
+              alert("An error occurred: " + err.message);
+            });
+        }
+      });
+
+      function sendMessage(e) {
+        e.preventDefault();
+        if (nameInput.value && messageInput.value && chatRoom.value) {
+          fetch("/Message/send", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ChatRoom: chatRoom.value,
+              Content: messageInput.value,
+            }),
+          })
+            .then((response) => response.json())
+            .then((result) => {
+              console.log(result);
+              socket.emit("message", {
+                name: nameInput.value,
+                text: result.message.Content,
+              });
+              // Handle the response here
+            })
+            .catch((err) => {
+              console.error(err);
+                
+              alert("put right chat room name");
+            });
+
+          messageInput.value = "";
+        }
+        messageInput.focus();
+      }
+
+      const enterRoom = (e) => {
+        e.preventDefault();
+        if (nameInput.value && chatRoom.value) {
+          fetch("/Message/send", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ChatRoom: chatRoom.value,
+              Content: messageInput.value,
+            }),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                // Check if the response status is not OK (e.g., 404, 500, etc.)
+                throw new Error("Error occurred");
+              }
+              return response.json();
+            })
+            .then((result) => {
+              console.log(result);
+              socket.emit("enterRoom", {
+                name: nameInput.value,
+                room: chatRoom.value,
+              });
+              // Handle the response here
+            })
+            .catch((err) => {
+              console.error(err);
+              // Show an alert when an error occurs
+              window.alert("An error occurred: " + err.message);
+            });
+        }
+      };
+
+      document
+        .getElementById("messageForm")
+        .addEventListener("submit", sendMessage);
+      document.getElementById("joinForm").addEventListener("submit", enterRoom);
+
+      messageInput.addEventListener("keypress", () => {
+        socket.emit("activity", nameInput.value);
+      });
+
+      // Listen for messages
+      socket.on("message", (data) => {
+        activity.textContent = "";
+        const { name, text, time } = data;
+        const li = document.createElement("li");
+        li.className = "post";
+        if (name === nameInput.value) li.className = "post post--left";
+        if (name !== nameInput.value && name !== "Admin")
+          li.className = "post post--right";
+        if (name !== "Admin") {
+          li.innerHTML = `<div class="post__header ${
+            name === nameInput.value
+              ? "post__header--user"
+              : "post__header--reply"
+          }">
+              <span class="post__header--name">${name}</span>
+              <span class="post__header--time">${time}</span>
+              </div>
+              <div class="post__text">${text}</div>`;
+        } else {
+          li.innerHTML = `<div class="post__text">${text}</div>`;
+        }
+        chatDisplay.appendChild(li);
+
+        chatDisplay.scrollTop = chatDisplay.scrollHeight;
+      });
+
+      let activityTimer;
+      socket.on("activity", (name) => {
+        activity.textContent = `${name} is typing...`;
+
+        // Clear after 3 seconds
+        clearTimeout(activityTimer);
+        activityTimer = setTimeout(() => {
+          activity.textContent = "";
+        }, 3000);
+      });
+
+      socket.on("userList", ({ users }) => {
+        showUsers(users);
+      });
+
+      socket.on("roomList", ({ rooms }) => {
+        showRooms(rooms);
+      });
+
+      function showUsers(users) {
+        usersList.textContent = "";
+        if (users) {
+          usersList.innerHTML = `<em>Users in ${chatRoom.value}:</em>`;
+          users.forEach((user, i) => {
+            usersList.textContent += ` ${user.name}`;
+            if (users.length > 1 && i !== users.length - 1) {
+              usersList.textContent += ",";
+            }
+          });
+        }
+      }
+
+      function showRooms(rooms) {
+        roomList.textContent = "";
+        if (rooms) {
+          roomList.innerHTML = "<em>Active Rooms:</em>";
+          rooms.forEach((room, i) => {
+            roomList.textContent += ` ${room}`;
+            if (rooms.length > 1 && i !== rooms.length - 1) {
+              roomList.textContent += ",";
+            }
+          });
+        }
+      }
+    </script>
+  </body>
 </html>

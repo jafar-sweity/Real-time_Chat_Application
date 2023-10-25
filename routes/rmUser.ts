@@ -9,6 +9,7 @@ const route = express.Router();
     if (!username){
         console.log({message : "you must login!"})
     }
+    
     deleteUser(username).then(()=>{
         console.log('the user delete succefully')
     }).catch((error)=>{

@@ -44,7 +44,7 @@ button {
 }
 
 .chat-display {
-    background-color: #333;
+    background-color: #ac6e6e;
     list-style-type: none;
     width: 100%;
     max-width: 600px;
@@ -121,3 +121,13 @@ button {
 .activity {
     font-style: italic;
 }
+/* Styles for the modal */
+.login-inputs {
+    display: none;
+  }
+  
+.modal{
+    display: none;
+}
+  
+  

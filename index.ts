@@ -23,126 +23,172 @@ import logout from './routes/logout.js';
 import Mute from './routes/Mute.js';
 import unMute from './routes/unMute.js';
 import uploadAttachmentRouter from './routes/uploadAttachment.js';
-import multer from 'multer';
-import fs from 'fs';
-
-
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import CheckChat from './routes/CheckChat.js';
 
 const app = express();
-let server = http.createServer(app);
+const server = http.createServer(app);
+
 app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000;
-const publicPath = path.join("./public/");
-
+const publicPath = path.join("./public");
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
-
-
 app.use(express.static(publicPath));
 app.use(bodyParser.json());
-app.use(express.json())
-let io = new Server(server);
+app.use(express.json());
 
-// const socketIOMiddleware = (socket: socket.Socket) =>{
-//   if (!socket.request) {
-//     socket.emit("error", "No session");
-//     return;
-//   }
+// Register routes outside the 'online' event handler
+app.use('/auth', register);
+app.use('/auth', login);
+app.use('/auth', logout);
+app.use('/chatroom', chatroom);
+app.use('/chatroom', CheckChat)
+app.use('/Message', sendMessage);
+app.use('/Message', listMessages);
+app.use('/user', Block);
+app.use('/user', unBlock);
+app.use('/user', rmUser);
+app.use('/user', Mute);
+app.use('/user', unMute);
+app.use('/user', uploadAttachmentRouter);
+const ADMIN = 'Admin';
 
+const io = new Server(server);
 
-// }
+// State
+const UsersState = {
+  users: [] as { id: string; name: string; room: string }[],
+  setUsers: function (newUsersArray: { id: string; name: string; room: string }[]) {
+      this.users = newUsersArray;
+  }
+};
 
-
-
-// io.use(socketIOMiddleware);
-
-// let io = new Server(server, {
-//   cors: {
-//     origin: 'http://localhost:3000',
-//     methods: ['GET'], // Add the HTTP methods you need
-//   },
-// });
-
-
-
-// app.get('/', (req, res) => {
-//    res.send('connected!!');
-//    console.log('connected');
-//  });
-//  app.use(`/${socket.id}`, rmUser);
 
 io.on('connection', (socket) => {
-  console.log(`Client connected with ID: ${socket.id}`);
-  socket.on('online', (socket) => {
-  })
-  app.use('/auth', register);
-  app.use('/auth', login);
-  app.use('/auth', logout);
-  app.use('/chatroom', chatroom);
-  app.use('/Message', sendMessage);
-  app.use('/Message', listMessages);
-  app.use('/user', Block);
-  app.use('/user', unBlock);
-  app.use('/user', rmUser); 
-  app.use('/user',Mute);
-  app.use('/user',unMute);
-  app.use('/user',uploadAttachmentRouter);
-  
+  console.log(`User ${socket.id} connected`);
 
+  // Upon connection - only to the user
+  socket.emit('message', buildMsg(ADMIN, "Welcome to Chat App!"));
 
+  socket.on('enterRoom', ({ name, room }) => {
 
-  socket.emit('newMessage', {
-    from: 'firas',
-    text: 'hello everybody',
-    CreatedAt: new Date().getTime()
-  })
-  socket.broadcast.emit('newMessage', {
-    from: 'firas',
-    text: 'new user joined',
-    CreatedAt: new Date().getTime()
-  })
+      // Leave the previous room
+      const prevRoom = getUser(socket.id)?.room;
 
-  socket.on('createMessage', () => {
+      if (prevRoom) {
+          socket.leave(prevRoom);
+          io.to(prevRoom).emit('message', buildMsg(ADMIN, `${name} has left the room`));
+      }
 
-    // console.log('message', sendMessage );
+      const user = activateUser(socket.id, name, room);
 
-    // // Emit the message to all connected clients, including the sender
-    // io.emit('newMessage', {
-    //     Message:sendMessage
-    // });
+      // Cannot update the previous room's users list until after the state update in activate user
+      if (prevRoom) {
+          io.to(prevRoom).emit('userList', {
+              users: getUsersInRoom(prevRoom)
+          });
+      }
+
+      // Join the room
+      socket.join(user.room);
+
+      // To the user who joined
+      socket.emit('message', buildMsg(ADMIN, `You have joined the ${user.room} chat room`));
+
+      // To everyone else
+      socket.broadcast.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has joined the room`));
+
+      // Update the user list for the room
+      io.to(user.room).emit('userList', {
+          users: getUsersInRoom(user.room)
+      });
+
+      // Update the rooms list for everyone
+      io.emit('roomList', {
+          rooms: getAllActiveRooms()
+      });
   });
 
+  // When a user disconnects - to all others
   socket.on('disconnect', () => {
-    console.log(`Client disconnected`);
+      const user = getUser(socket.id);
+      userLeavesApp(socket.id);
+
+      if (user) {
+          io.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has left the room`));
+
+          io.to(user.room).emit('userList', {
+              users: getUsersInRoom(user.room)
+          });
+
+          io.emit('roomList', {
+              rooms: getAllActiveRooms()
+          });
+      }
+
+      console.log(`User ${socket.id} disconnected`);
+  });
+
+  // Listening for a message event
+  socket.on('message', ({ name, text }) => {
+      const room = getUser(socket.id)?.room;
+      if (room) {
+          io.to(room).emit('message', buildMsg(name, text));
+      }
+  });
+
+  // Listen for activity
+  socket.on('activity', (name) => {
+      const room = getUser(socket.id)?.room;
+      if (room) {
+          socket.broadcast.to(room).emit('activity', name);
+      }
   });
 });
 
+function buildMsg(name: string, text: string) {
+  return {
+      name,
+      text,
+      time: new Intl.DateTimeFormat('default', {
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric'
+      }).format(new Date())
+  };
+}
 
+// User functions
+function activateUser(id: string, name: string, room: string) {
+  const user = { id, name, room };
+  UsersState.setUsers([
+      ...UsersState.users.filter(user => user.id !== id),
+      user
+  ]);
+  return user;
+}
 
+function userLeavesApp(id: string) {
+  UsersState.setUsers(
+      UsersState.users.filter(user => user.id !== id)
+  );
+}
 
+function getUser(id: string) {
+  return UsersState.users.find(user => user.id === id);
+}
 
+function getUsersInRoom(room: string) {
+  return UsersState.users.filter(user => user.room === room);
+}
 
-
-
-
-
-// io.on('online', (socket)=>{
-//   app.use(`/users`, register);
-//   console.log(`the user with id ${socket.id }is online `)
-// })
-
-
-
+function getAllActiveRooms() {
+  return Array.from(new Set(UsersState.users.map(user => user.room)));
+}
 
 
 server.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
   dataSource.initializeDB();
-
-
-
 });
-

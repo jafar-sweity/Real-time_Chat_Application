@@ -1,6 +1,7 @@
 import express from 'express';
 import { login } from '../controllers/userControllers.js';
 import socket from 'socket.io'
+<<<<<<< HEAD
 const router = express.Router();
 
 
@@ -35,3 +36,7 @@ export default router.post('/login',async(req:express.Request,res:express.Respon
     res.status(400).json({ msg: result.msg });
   }
 });
+=======
+const router = express.Router();  
+export default router.post('/login', login);
+>>>>>>> origin/firas
