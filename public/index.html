@@ -5,15 +5,31 @@
     <link rel="stylesheet" href="style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat app</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"
       integrity="sha512-Xm9qbB6Pu06k3PUwPj785dyTl6oHxgsv9nHp7ej7nCpAqGZT3OZpsELuCYX05DdonFpTlBpXMOxjavIAIUwr0w=="
-      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
   </head>
   <body>
     <main>
-      <form class="form-join" id="joinForm">
-        <input type="text" id="name" maxlength="8" placeholder="Your name" size="5" required />
-        <input type="text" id="room" placeholder="Chat room" size="5" required />
+      <form class="form-join" id="joinForm" method="post">
+        <input
+          type="text"
+          id="name"
+          maxlength="8"
+          placeholder="Your name"
+          size="5"
+          required
+        />
+        <input
+          type="text"
+          id="room"
+          placeholder="Chat room"
+          size="5"
+          required
+        />
         <button type="submit">Join</button>
       </form>
 
@@ -28,117 +44,238 @@
       </ul>
 
       <form class="form-msg" id="messageForm">
-        <input type="text" id="message" placeholder="Your message" required>
+        <input type="text" id="message" placeholder="Your message" required />
         <button type="submit">Send</button>
       </form>
+
+      <div id="loginInputs" class="login-inputs">
+        <input type="text" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button id="loginButton">Login</button>
+      </div>
     </main>
     <script>
-      const socket = io('ws://localhost:3000');
+      const socket = io("ws://localhost:3000");
+      const closeModalButton = document.getElementById("closeModalButton");
+      const modal = document.getElementById("modal");
+      const nameInput = document.getElementById("name");
+      const chatRoom = document.getElementById("room");
+      const activity = document.querySelector(".activity");
+      const usersList = document.querySelector(".user-list");
+      const roomList = document.querySelector(".room-list");
+      const chatDisplay = document.getElementById("messageList");
+      const messageInput = document.getElementById("message");
+      const loginInputs = document.getElementById("loginInputs");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+        let success = false;
+      nameInput.addEventListener("click", () => {
+        if (success) {
+            loginInputs.style.display = "none";
+            document.getElementById('name').disabled = false;
+        } else {
+            document.getElementById('name').disabled = true;
+            loginInputs.style.display = "block";
+            
+        }
 
-      const nameInput = document.getElementById('name');
-      const chatRoom = document.getElementById('room');
-      const activity = document.querySelector('.activity');
-      const usersList = document.querySelector('.user-list');
-      const roomList = document.querySelector('.room-list');
-      const chatDisplay = document.getElementById('messageList');
-      const messageInput = document.getElementById('message');
+      });
+
+      function toggleLoginInputs() {
+        if (
+          loginInputs.style.display === "none" ||
+          loginInputs.style.display === ""
+        ) {
+          loginInputs.style.display = "block";
+        } else {
+          loginInputs.style.display = "none";
+        }
+      }
+      
+      loginButton.addEventListener("click", () => {
+        // Get the email and password entered by the user
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        // Add your login logic here
+        if (email && password) {
+          // Check credentials and perform the login operation
+          fetch("/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              Email: emailInput.value,
+              Password: passwordInput.value,
+            }),
+          })
+            .then((response) => response.json())
+            .then((result) => {
+              if (result.success) {
+                success =true;
+                console.log(result);
+                document.getElementById('name').disabled = false;
+                document.getElementById('name').value = result.user;
+                toggleLoginInputs();
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              // Show an alert when an error occurs
+              alert("An error occurred: " + err.message);
+            });
+        }
+      });
 
       function sendMessage(e) {
-          e.preventDefault();
-          if (nameInput.value && messageInput.value && chatRoom.value) {
-              socket.emit('message', {
-                  name: nameInput.value,
-                  text: messageInput.value
+        e.preventDefault();
+        if (nameInput.value && messageInput.value && chatRoom.value) {
+          fetch("/Message/send", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ChatRoom: chatRoom.value,
+              Content: messageInput.value,
+            }),
+          })
+            .then((response) => response.json())
+            .then((result) => {
+              console.log(result);
+              socket.emit("message", {
+                name: nameInput.value,
+                text: result.message.Content,
               });
-              messageInput.value = '';
-          }
-          messageInput.focus();
+              // Handle the response here
+            })
+            .catch((err) => {
+              console.error(err);
+                
+              alert("put right chat room name");
+            });
+
+          messageInput.value = "";
+        }
+        messageInput.focus();
       }
 
-      function enterRoom(e) {
-          e.preventDefault();
-          if (nameInput.value && chatRoom.value) {
-              socket.emit('enterRoom', {
-                  name: nameInput.value,
-                  room: chatRoom.value
+      const enterRoom = (e) => {
+        e.preventDefault();
+        if (nameInput.value && chatRoom.value) {
+          fetch("/Message/send", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ChatRoom: chatRoom.value,
+              Content: messageInput.value,
+            }),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                // Check if the response status is not OK (e.g., 404, 500, etc.)
+                throw new Error("Error occurred");
+              }
+              return response.json();
+            })
+            .then((result) => {
+              console.log(result);
+              socket.emit("enterRoom", {
+                name: nameInput.value,
+                room: chatRoom.value,
               });
-          }
-      }
+              // Handle the response here
+            })
+            .catch((err) => {
+              console.error(err);
+              // Show an alert when an error occurs
+              window.alert("An error occurred: " + err.message);
+            });
+        }
+      };
 
-      document.getElementById('messageForm').addEventListener('submit', sendMessage);
-      document.getElementById('joinForm').addEventListener('submit', enterRoom);
+      document
+        .getElementById("messageForm")
+        .addEventListener("submit", sendMessage);
+      document.getElementById("joinForm").addEventListener("submit", enterRoom);
 
-      messageInput.addEventListener('keypress', () => {
-          socket.emit('activity', nameInput.value);
+      messageInput.addEventListener("keypress", () => {
+        socket.emit("activity", nameInput.value);
       });
 
       // Listen for messages
-      socket.on('message', (data) => {
-          activity.textContent = '';
-          const { name, text, time } = data;
-          const li = document.createElement('li');
-          li.className = 'post';
-          if (name === nameInput.value) li.className = 'post post--left';
-          if (name !== nameInput.value && name !== 'Admin') li.className = 'post post--right';
-          if (name !== 'Admin') {
-              li.innerHTML = `<div class="post__header ${
-                  name === nameInput.value ? 'post__header--user' : 'post__header--reply'
-              }">
+      socket.on("message", (data) => {
+        activity.textContent = "";
+        const { name, text, time } = data;
+        const li = document.createElement("li");
+        li.className = "post";
+        if (name === nameInput.value) li.className = "post post--left";
+        if (name !== nameInput.value && name !== "Admin")
+          li.className = "post post--right";
+        if (name !== "Admin") {
+          li.innerHTML = `<div class="post__header ${
+            name === nameInput.value
+              ? "post__header--user"
+              : "post__header--reply"
+          }">
               <span class="post__header--name">${name}</span>
               <span class="post__header--time">${time}</span>
               </div>
               <div class="post__text">${text}</div>`;
-          } else {
-              li.innerHTML = `<div class="post__text">${text}</div>`;
-          }
-          chatDisplay.appendChild(li);
+        } else {
+          li.innerHTML = `<div class="post__text">${text}</div>`;
+        }
+        chatDisplay.appendChild(li);
 
-          chatDisplay.scrollTop = chatDisplay.scrollHeight;
+        chatDisplay.scrollTop = chatDisplay.scrollHeight;
       });
 
       let activityTimer;
-      socket.on('activity', (name) => {
-          activity.textContent = `${name} is typing...`;
+      socket.on("activity", (name) => {
+        activity.textContent = `${name} is typing...`;
 
-          // Clear after 3 seconds
-          clearTimeout(activityTimer);
-          activityTimer = setTimeout(() => {
-              activity.textContent = '';
-          }, 3000);
+        // Clear after 3 seconds
+        clearTimeout(activityTimer);
+        activityTimer = setTimeout(() => {
+          activity.textContent = "";
+        }, 3000);
       });
 
-      socket.on('userList', ({ users }) => {
-          showUsers(users);
+      socket.on("userList", ({ users }) => {
+        showUsers(users);
       });
 
-      socket.on('roomList', ({ rooms }) => {
-          showRooms(rooms);
+      socket.on("roomList", ({ rooms }) => {
+        showRooms(rooms);
       });
 
       function showUsers(users) {
-          usersList.textContent = '';
-          if (users) {
-              usersList.innerHTML = `<em>Users in ${chatRoom.value}:</em>`;
-              users.forEach((user, i) => {
-                  usersList.textContent += ` ${user.name}`;
-                  if (users.length > 1 && i !== users.length - 1) {
-                      usersList.textContent += ',';
-                  }
-              });
-          }
+        usersList.textContent = "";
+        if (users) {
+          usersList.innerHTML = `<em>Users in ${chatRoom.value}:</em>`;
+          users.forEach((user, i) => {
+            usersList.textContent += ` ${user.name}`;
+            if (users.length > 1 && i !== users.length - 1) {
+              usersList.textContent += ",";
+            }
+          });
+        }
       }
 
       function showRooms(rooms) {
-          roomList.textContent = '';
-          if (rooms) {
-              roomList.innerHTML = '<em>Active Rooms:</em>';
-              rooms.forEach((room, i) => {
-                  roomList.textContent += ` ${room}`;
-                  if (rooms.length > 1 && i !== rooms.length - 1) {
-                      roomList.textContent += ',';
-                  }
-              });
-          }
+        roomList.textContent = "";
+        if (rooms) {
+          roomList.innerHTML = "<em>Active Rooms:</em>";
+          rooms.forEach((room, i) => {
+            roomList.textContent += ` ${room}`;
+            if (rooms.length > 1 && i !== rooms.length - 1) {
+              roomList.textContent += ",";
+            }
+          });
+        }
       }
     </script>
   </body>

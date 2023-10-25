@@ -23,6 +23,7 @@ import logout from './routes/logout.js';
 import Mute from './routes/Mute.js';
 import unMute from './routes/unMute.js';
 import uploadAttachmentRouter from './routes/uploadAttachment.js';
+import CheckChat from './routes/CheckChat.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -31,7 +32,7 @@ app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000;
 const publicPath = path.join("./public");
-
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(publicPath));
 app.use(bodyParser.json());
@@ -42,6 +43,7 @@ app.use('/auth', register);
 app.use('/auth', login);
 app.use('/auth', logout);
 app.use('/chatroom', chatroom);
+app.use('/chatroom', CheckChat)
 app.use('/Message', sendMessage);
 app.use('/Message', listMessages);
 app.use('/user', Block);

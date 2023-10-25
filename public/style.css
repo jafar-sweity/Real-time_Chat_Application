@@ -121,3 +121,13 @@ button {
 .activity {
     font-style: italic;
 }
+/* Styles for the modal */
+.login-inputs {
+    display: none;
+  }
+  
+.modal{
+    display: none;
+}
+  
+  
