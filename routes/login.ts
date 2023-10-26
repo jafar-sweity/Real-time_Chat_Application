@@ -17,7 +17,9 @@ export default router.post('/login', async (req: express.Request, res: express.R
     const result = await login(Email, Password);
 
     if (result.success) {
-      res.cookie('fullName', result.user, {
+      console.log(result.user);
+      
+      res.cookie('Username', result.user, {
         maxAge: 60 * 60 * 1000,
       });
       res.cookie('loginTime', Date.now(), {
