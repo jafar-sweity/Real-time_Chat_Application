@@ -12,6 +12,10 @@
         @Column({nullable:true ,type:'blob'})
         Attachment:Buffer
 
+        
+        @Column({nullable:true})
+        objectKey:string
+    
         @OneToOne(()=>Message, message =>message.attachment,{cascade:true})
         message:Relation<Message>
 

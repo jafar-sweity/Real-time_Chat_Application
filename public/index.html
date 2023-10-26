@@ -152,8 +152,8 @@
             })
             .catch((err) => {
               console.error(err);
-                
-              alert("put right chat room name");
+              // Show an alert when an error occurs
+              alert("An error occurred: " + err.message);
             });
 
           messageInput.value = "";
