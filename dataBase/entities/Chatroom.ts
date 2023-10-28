@@ -1,25 +1,38 @@
-import { BaseEntity, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+    BaseEntity,
+    Column,
+    Entity,
+    PrimaryGeneratedColumn,
+    ManyToMany,
+    JoinTable,
+    Relation,
+    JoinColumn,
+    OneToMany // Import OneToMany
+} from "typeorm";
 import { User } from "./User.js";
-import { JoinTable } from "typeorm";
-import { Relation } from "typeorm";
+import { Message } from "./Message.js"; // Import Message entity
 
 @Entity()
 export class ChatRoom extends BaseEntity {
     @PrimaryGeneratedColumn('increment')
-    ChatRoomID:number
+    ChatRoomID: number
 
-    @Column({ default: "group" })
+    @Column()
     Name: string
 
     @Column({
-        default: 'private', nullable:true
+        default: 'group', nullable: true
     })
     Type: string
 
-    @Column({type:'timestamp'})
-    creationDate : Date;
+    @Column({ type: 'timestamp' , default: () => 'CURRENT_TIMESTAMP'})
+    creationDate: Date;
 
     @ManyToMany(() => User)
     @JoinTable()
-    user: Relation<User>    
+    user: Relation<User>[];
+
+    @OneToMany(() => Message, message => message.chatRoom)
+    @JoinColumn()
+    messages:Message[];
 }

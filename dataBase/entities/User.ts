@@ -47,19 +47,21 @@ export class User extends BaseEntity {
   @IsEmail()
   Email: string;
 
-  @Column({ default: false })
-  OnlineStatus: boolean;
 
 
   @ManyToMany(() => ChatRoom)
   @JoinTable()
   chatRooms: ChatRoom[];
+  
 
-  @OneToMany(() => UserBlock, userBlock => userBlock.BlockedId)
-  blockedUsers: UserBlock[];
+    @OneToMany(() => UserBlock, (userBlock) => userBlock.Blocked)
+  blockedUsers: UserBlock;
+
+  @OneToMany(() => UserBlock, (userBlock) => userBlock.Blocker)
+  blockedBy: UserBlock;
 
   @OneToMany(() => UserMute, userMute => userMute.MutedId)
-  mutedUsers: UserMute[];
+  mutedUsers: UserMute;
 
   @ManyToMany(() => UserRoles)
   @JoinTable()
@@ -67,5 +69,6 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Message, message => message.user) 
   messages: Message[];
+  
 
 }
