@@ -10,13 +10,14 @@ import S3 from 'aws-sdk/clients/s3.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
 export const uploadAttachment = async (req: expres.Request, res: expres.Response) => {
   try {
     if (!req.cookies['Username']) {
       return res.status(401).json({ message: 'You must log in!' });
     }
     const username = req.cookies['Username'];
-    
+
 
     const user = await User.findOne({ where: { Username: username } });
 
@@ -26,37 +27,34 @@ export const uploadAttachment = async (req: expres.Request, res: expres.Response
     if (!req.body.content) {
       return res.status(400).json({ message: 'You must enter the content' });
     }
-    
+
     if (!req.file) {
       return res.status(400).json({ message: 'You must upload a file' });
     }
-   
+    const fuleToUpload = fs.readFileSync(req.file.path);
+    const encodedFile = fuleToUpload.toString('base64');
+    const file = Buffer.from(encodedFile, 'base64');
 
-    const fileStream=fs.createReadStream(req.file.path)
-
-   
-
-    const fileToUpload = fs.readFileSync(req.file.path); // Correct variable name
-  
-    const result = await upload_func(req.file);
-    console.log(result);
-    
-    
     const attachment = new Attachment();
-  
-   
+
+    attachment.Attachment = file;
     await attachment.save();
+
     const message = new Message();
-    message.user = user;
     message.attachment = attachment;
+    message.Content = req.body.Content; 
     await message.save();
-    res.status(201).json({ message: 'Attachment uploaded successfully',filePath:result.Key });
+
+
+    res.status(201).json({ message: 'Attachment uploaded successfully' });
 
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to upload the attachment' });
   }
 };
+
+
 const upload_func =  (file:any) => {
   const fileStream = fs.createReadStream(file.path);
 
@@ -75,7 +73,7 @@ const upload_func =  (file:any) => {
   }
 else {
   const uploadParams = {
-    Bucket:"real-time-chat-jafar-firas" ,
+    Bucket:"jafar-test" ,
     Body: fileStream,
     Key: file.filename,
   };
@@ -83,7 +81,7 @@ else {
   return s3.upload(uploadParams).promise();
 }
 }
- export default uploadAttachment;
+export default uploadAttachment;
 
 
 
