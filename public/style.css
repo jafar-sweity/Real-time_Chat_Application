@@ -123,8 +123,15 @@ button {
 }
 /* Styles for the modal */
 .login-inputs {
+    width: 100%;
+    min-height: 2.65rem;
+    margin: 0 auto;
     display: none;
-  }
+    max-width: 600px;
+    padding: .75rem .25rem;
+    gap: .5rem;
+}
+  
   
 .modal{
     display: none;

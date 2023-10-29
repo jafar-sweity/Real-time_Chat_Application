@@ -43,3 +43,43 @@ export const sendMessage = async (req : express.Request, res:express.Response) =
     res.status(500).json({ status: 'Message sending failed', error: error.message });
   }
 };
+
+
+export const sendMessage11 = async (sender:User,receiver:User, content:string,chatroomName:ChatRoom) => {
+  try {
+    // Create a chat room with a unique name based on sender and receiver
+    if (!sender || !receiver || !content) {
+      return { success: false, msg: 'Missing required fields' };
+      
+    }
+
+    const chatroom: ChatRoom | null = await ChatRoom.findOne({ where: { ChatRoomID : chatroomName.ChatRoomID} });
+
+    if (!chatroom) {
+      console.log("chatroom not found");
+      return { success: false, msg: 'Chat room not found' };
+    }
+    const user = await User.findOne({ where: { Username:sender.Username } });
+
+    if (!user) {
+      console.log("user not found");
+      return { success: false, msg: 'User not found' };
+    }
+
+    const newMessage = new Message();
+    newMessage.Content = content;
+    newMessage.chatRoom = chatroom;
+    newMessage.user = user;
+
+        const savedMessage = await Message.save(newMessage);
+        console.log({msg:"message sent successfully",message:savedMessage});
+
+        console.log('The chat room created successfully, and the message was sent.');
+
+    // You can return some success response here if needed
+    return { success: true, msg: 'Chat room created and message sent' };
+  } catch (error:any) {
+    console.error(error);
+    return { success: false, msg: 'Error', error: error.message };
+  }
+}

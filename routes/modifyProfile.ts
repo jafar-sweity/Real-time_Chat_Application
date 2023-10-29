@@ -6,8 +6,8 @@ const app = express.Router();
 
 
 
-app.post('/modifyProfile',(req,res)=>{
-    const UsernameOld:any = req.query.Username;
+export default app.post('/modifyProfile',(req,res)=>{
+    const UsernameOld = req.cookies['Username'];
     const Username = req.body.Username;
     const Password = req.body.Password;
     const Email = req.body.Email;
@@ -20,7 +20,13 @@ app.post('/modifyProfile',(req,res)=>{
       User.find({where: {Username: UsernameOld}}).then(()=>{
 
           updateUserProfile(UsernameOld,UserData)
-      }).catch( )
+          console.log('the user updated succefully')
+      }).catch(
+            (error)=>{
+                console.log(error);
+            }
+            
+       )
 
 
     })

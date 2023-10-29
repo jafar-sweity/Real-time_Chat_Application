@@ -2,12 +2,10 @@ import 'typeorm';
 import { DataSource } from 'typeorm';
 import 'dotenv/config';
 import { User } from './entities/User.js';
-import { Permission } from './entities/Permission.js';
 import { ChatRoom } from './entities/Chatroom.js';
 import { Message } from './entities/Message.js';
 import { UserBlock } from './entities/UserBlock.js';
 import { UserMute } from './entities/UserMute.js';
-import { UserRoles } from './entities/UserRoles.js';
 import { Attachment } from './entities/Attachment.js';
 const dataSource = new DataSource({
     type: 'mysql',
@@ -18,7 +16,7 @@ const dataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: true,
     logging: true,
-    entities: [User, ChatRoom, Message, Permission, UserBlock, UserMute, UserRoles, Attachment]
+    entities: [User, ChatRoom, Message, UserBlock, UserMute, Attachment]
 });
 const initializeDB = async () => await dataSource.initialize().then(() => {
     console.log('connected to db');

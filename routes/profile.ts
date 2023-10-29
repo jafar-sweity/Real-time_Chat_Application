@@ -4,8 +4,8 @@ import { User } from '../dataBase/entities/User.js';
 const app = express.Router();
 
 
- app.get('/userProfile',(req,res)=>{
-    const Username = req.body.Username;
+export default app.get('/userProfile',(req,res)=>{
+    const Username = req.cookies['Username'];
 
     User.find({where : {Username:Username}}).then((user)=>{
     if(user){
@@ -19,5 +19,4 @@ const app = express.Router();
     })
 })
 
-export default app;
 
