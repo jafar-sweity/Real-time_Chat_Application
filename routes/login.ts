@@ -29,10 +29,8 @@ export default router.post('/login', async (req: express.Request, res: express.R
         maxAge: 60 * 60 * 1000,
       });
 
-      // Send a success response with a status code of 201
       res.status(201).json(result);
     } else {
-      // Send an error response with a status code of 400
       res.status(400).json(result);
     }
   } catch (error) {
