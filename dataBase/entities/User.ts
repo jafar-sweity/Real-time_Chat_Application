@@ -17,7 +17,6 @@ import { Message } from './Message.js';
 import { ChatRoom } from './Chatroom.js';
 import { UserBlock } from './UserBlock.js';
 import { UserMute } from './UserMute.js';
-import { UserRoles } from './UserRoles.js';
 
 @Entity()
 export class User extends BaseEntity {
@@ -63,10 +62,7 @@ export class User extends BaseEntity {
   @OneToMany(() => UserMute, userMute => userMute.MutedId)
   mutedUsers: UserMute;
 
-  @ManyToMany(() => UserRoles)
-  @JoinTable()
-  roles: UserRoles[];
-
+  
   @OneToMany(() => Message, message => message.user) 
   messages: Message[];
   

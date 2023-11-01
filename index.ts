@@ -24,6 +24,10 @@ import Mute from './routes/Mute.js';
 import unMute from './routes/unMute.js';
 import uploadAttachmentRouter from './routes/uploadAttachment.js';
 import CheckChat from './routes/CheckChat.js';
+import profile from './routes/profile.js';
+import modifyProfile from './routes/modifyProfile.js';
+import sendMessage11 from './routes/sendMessage1-1.js';
+import chatgpt from './routes/chatgpt.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -46,12 +50,18 @@ app.use('/chatroom', chatroom);
 app.use('/chatroom', CheckChat)
 app.use('/Message', sendMessage);
 app.use('/Message', listMessages);
+app.use('/Message',sendMessage11)
 app.use('/user', Block);
 app.use('/user', unBlock);
 app.use('/user', rmUser);
 app.use('/user', Mute);
 app.use('/user', unMute);
 app.use('/user', uploadAttachmentRouter);
+app.use('/user',profile);
+app.use('/user',modifyProfile);
+app.use('/chatgpt',chatgpt);
+
+
 const ADMIN = 'Admin';
 
 const io = new Server(server);
