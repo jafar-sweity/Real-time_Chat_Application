@@ -27,6 +27,7 @@ import CheckChat from './routes/CheckChat.js';
 import profile from './routes/profile.js';
 import modifyProfile from './routes/modifyProfile.js';
 import sendMessage11 from './routes/sendMessage1-1.js';
+import chatgpt from './routes/chatgpt.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -58,6 +59,7 @@ app.use('/user', unMute);
 app.use('/user', uploadAttachmentRouter);
 app.use('/user',profile);
 app.use('/user',modifyProfile);
+app.use('/chatgpt',chatgpt);
 
 
 const ADMIN = 'Admin';
