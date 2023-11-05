@@ -40,7 +40,6 @@ Our application leverages the following technologies:
 - **Express.js**: Framework for building RESTful APIs.
 - **WebSocket (e.g., [socket.io](http://socket.io))**: Real-time communication.
 - **mySQL (example)**: Database for data storage.
-- **Passport.js**: User authentication.
 - **JWT (JSON Web Tokens)**: Authentication tokens.
 
 
