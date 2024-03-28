@@ -10,14 +10,14 @@ Our Real-time Chat Application aims to provide users with a seamless and secure 
 
 ### Features
 
-- Real-time Messaging: Send and receive messages instantly.
-- User Authentication: Securely manage your account with user registration and login.
-- Chat Rooms: Create or join chat rooms for group conversations.
-- Message Storage: Access chat history and retrieve previous messages.
-- Online Status: See who's online and when they're active.
-- Attachments: Share multimedia attachments like images and files.
-- Search: Find specific messages within conversations.
-- User Blocking and Muting: Manage unwanted messages and notifications.
+- **Real-time Messaging**: Send and receive messages instantly.
+- **User Authentication**: Securely manage your account with user registration and login.
+- **Chat Rooms**: Create or join chat rooms for group conversations.
+- **Message Storage**: Access chat history and retrieve previous messages.
+- **Online Status**: See who's online and when they're active.
+- **Attachments**: Share multimedia attachments like images and files.
+- **Search**: Find specific messages within conversations.
+- **User Blocking and Muting**: Manage unwanted messages and notifications.
 
 ## System Overview
 
@@ -31,7 +31,6 @@ The system follows a client-server architecture with the following components:
 - **Database**: Stores user data, chat history, and message content.
 - **WebSocket**: Enables real-time communication between clients and the server.
 
-
 ### Technology Used
 
 Our application leverages the following technologies:
@@ -43,6 +42,33 @@ Our application leverages the following technologies:
 - **Passport.js**: User authentication.
 - **JWT (JSON Web Tokens)**: Authentication tokens.
 
+## Deployment and Automation
+
+Our Real-time Chat Application utilizes Docker, GitHub Actions, AWS services, and shell scripts for deployment and automation.
+
+### Continuous Integration and Deployment (CI/CD)
+
+We employ Docker and GitHub Actions for our CI/CD pipeline:
+
+- **CI Pipeline**: GitHub Actions automates the CI process, including linting, unit testing, building Docker images, and pushing them to a Docker registry.
+
+- **CD Pipeline**: Upon successful CI, GitHub Actions triggers the CD workflow, deploying Docker images to AWS EC2 instances or ECS clusters.
+
+### AWS Services Integration
+
+We utilize various AWS services for scalability and reliability:
+
+- **Amazon S3**: Stores static assets such as multimedia attachments and frontend assets.
+- **Amazon RDS**: Managed database service for storing user data, chat history, and message content.
+- **Amazon EC2**: Provides backend server environment for Node.js applications and WebSocket servers.
+- **Autoscaling Group**: Dynamically adjusts EC2 instances based on traffic demand for optimal performance and resource utilization.
+
+### Shell Scripts
+
+Shell scripts automate deployment, backup, and maintenance tasks:
+
+- **Deployment Automation**: Scripts handle Docker container orchestration, database migrations, and service restarts.
+- **Backup and Maintenance**: Scripts automate backup processes for databases and S3 assets, and handle routine maintenance tasks like log rotation and server health checks.
 
 ## Testing
 
@@ -97,4 +123,3 @@ Our search functionality allows users to find specific messages within conversat
 ### User Blocking and Muting
 
 Users have control over their interactions and can block or mute others to manage unwanted messages and notifications.
-
